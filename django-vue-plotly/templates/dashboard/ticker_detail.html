@@ -1,0 +1,37 @@
+{% extends "base/base.html" %}
+
+{% block title %}{{ ticker.symbol }} - Details{% endblock %}
+
+{% block content %}
+    <div class="p-6 bg-gray-100 min-h-screen">
+        <div class="max-w-4xl mx-auto bg-white p-6 shadow-md rounded-lg">
+            <h1 class="text-2xl font-bold text-gray-800 mb-4">
+                {{ ticker.name }} ({{ ticker.symbol }})
+            </h1>
+
+            <p class="text-xl font-semibold text-gray-700">
+                Latest Price: <span class="text-gray-900">${{ latest_price|floatformat:2 }}</span>
+            </p>
+
+            <p class="text-lg font-semibold {% if percent_change >= 0 %}text-green-500{% else %}text-red-500{% endif %}">
+                Change: {% if percent_change >= 0 %} ▲ {% else %} ▼ {% endif %} {{ percent_change|floatformat:2 }}%
+            </p>
+
+            <hr class="my-4">
+
+            <h2 class="text-lg font-bold text-gray-700">Price History (Last 90 Days)</h2>
+            <ul class="mt-2 space-y-2">
+                {% for date, price in price_data %}
+                    <li class="flex justify-between text-gray-700">
+                        <span>{{ date }}</span>
+                        <span>${{ price|floatformat:2 }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <a href="{% url 'dashboard' %}" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+{% endblock %}

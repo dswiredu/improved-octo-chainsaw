@@ -1,0 +1,11 @@
+{
+    "emmet.includeLanguages": {
+        "vue-html": "html",
+        "django-html": "html"
+    },
+    "emmet.showSuggestionsAsSnippets": true,
+    "emmet.useInlineCompletions": true,
+    "indentRainbow.includedLanguages": [
+        
+    ]
+}

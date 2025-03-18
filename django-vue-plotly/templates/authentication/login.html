@@ -1,0 +1,63 @@
+{% extends "base/base_authentication.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen w-full">
+    <!-- Login Card -->
+    <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-lg border border-gray-200">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Login</h2>
+
+        <!-- Error Message -->
+        {% if form.errors %}
+            <p class="text-red-500 text-center mb-4">Invalid username or password.</p>
+        {% endif %}
+
+        <!-- Login Form -->
+        <form method="POST" class="space-y-5">
+            {% csrf_token %}
+
+            <!-- Username Field -->
+            <div>
+                <label for="id_username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" name="username" id="id_username" required
+                       class="mt-1 p-3 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1E3A8A] focus:outline-none text-gray-800">
+                
+                {% if form.username.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Password Field -->
+            <div>
+                <label for="id_password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" name="password" id="id_password" required
+                       class="mt-1 p-3 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1E3A8A] focus:outline-none text-gray-800">
+                
+                {% if form.password.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.password.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit" class="w-full bg-[#1E3A8A] text-white p-3 rounded-lg hover:bg-blue-600 transition duration-300">
+                Login
+            </button>
+        </form>
+
+        <!-- Remember Me & Forgot Password -->
+        <div class="flex justify-between items-center mt-4 text-sm">
+            <label class="flex items-center space-x-2">
+                <input type="checkbox" name="remember_me" class="rounded border-gray-300">
+                <span class="text-gray-600">Remember Me</span>
+            </label>
+            <a href="#" class="text-blue-500 hover:underline">Forgot Password?</a>
+        </div>
+
+        <!-- Signup Option -->
+        <p class="text-sm text-gray-600 mt-6 text-center">
+            Don't have an account? <a href="#" class="text-blue-500 hover:underline">Sign up</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

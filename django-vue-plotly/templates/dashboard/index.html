@@ -1,0 +1,16 @@
+{% extends "base/base.html" %}
+
+{% block title %}Stock Summary{% endblock %}
+
+{% block content %}
+    <div class="p-6 bg-gray-100 h-screen">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold text-gray-800">Overview</h1>
+            {% include "partials/_datepicker.html" with form_action='dashboard' date_value=date_value date_max=date_max %}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            {% include "dashboard/partials/stock-summary-cards.html" %}
+        </div>
+    </div>
+{% endblock %}

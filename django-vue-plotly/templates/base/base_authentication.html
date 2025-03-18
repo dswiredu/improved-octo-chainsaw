@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- TailwindCSS & DaisyUI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: {} },
+            plugins: [
+                function ({ addBase }) {
+                    addBase({
+                        '@import': 'https://cdn.jsdelivr.net/npm/daisyui@3.2.1/dist/full.css'
+                    });
+                }
+            ]
+        };
+    </script>
+
+    <!-- Font Awesome (Free CDN) -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- Vue.js (CDN) -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    {% block head_extra %}{% endblock %}
+</head>
+<body class="bg-base-200 bg-gray-100 min-h-screen">
+    <div class="flex h-screen">
+        <div class="flex-1 flex flex-col bg-gray-100">
+            <main class="p-6 transition-all duration-300 ease-in-out">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

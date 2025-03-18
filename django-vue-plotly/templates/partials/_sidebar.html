@@ -1,0 +1,72 @@
+<aside class="bg-gray-800 text-white shadow-md p-4 flex flex-col h-screen fixed transition-all duration-300 ease-in-out w-64">
+    <!-- Sidebar Header -->
+    <h2 class="text-xl font-bold text-center tracking-wide border-b border-gray-600 pb-3 mb-4">
+        <span>Quant Labs</span>
+    </h2>
+
+    <!-- Navigation Menu -->
+    <ul class="menu space-y-3">
+        <li>
+            <a href="{% url "dashboard" %}" class="flex items-center p-4 text-lg rounded-lg hover:bg-gray-700 active:bg-gray-600">
+                <i class="fas fa-chart-line text-lg"></i>
+                <span class="ml-3">Overview</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="flex items-center p-4 text-lg rounded-lg hover:bg-gray-700 active:bg-gray-600">
+                <i class="fas fa-chart-bar text-lg"></i>
+                <span class="ml-3">Analytics</span>
+            </a>
+        </li>
+        <li>
+            <a href="https://ca.finance.yahoo.com/" target="_blank" class="flex items-center p-4 text-lg rounded-lg hover:bg-gray-700 active:bg-gray-600">
+                <i class="fas fa-external-link-alt text-lg"></i>
+                <span class="ml-3">Yahoo Finance</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="flex items-center p-4 text-lg rounded-lg hover:bg-gray-700 active:bg-gray-600">
+                <i class="fas fa-server text-lg"></i>
+                <span class="ml-3">Rundeck</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="flex items-center p-4 text-lg rounded-lg hover:bg-gray-700 active:bg-gray-600">
+                <i class="fas fa-file-alt text-lg"></i>
+                <span class="ml-3">Reports</span>
+            </a>
+        </li>
+        <hr class="my-2 border-gray-100">
+        {% if request.user.is_staff %}
+            <li>
+                <details class="group">
+                    <summary
+                        class="flex items-center p-4 text-lg rounded-lg hover:bg-gray-700 active:bg-gray-600 cursor-pointer"
+                    >
+                        <i class="fas fa-cog text-lg"></i>
+                        <span class="ml-3">Administration</span>
+                        <i class="fas fa-chevron-down ml-auto transition-transform group-open:rotate-180"></i>
+                    </summary>
+                    <ul class="ml-6 mt-2 space-y-2">
+                        <li><a href="{% url 'admin:index' %}" class="block p-3 rounded-lg hover:bg-gray-700">Admin Panel</a></li>
+                        <li><a href="#" class="block p-3 rounded-lg hover:bg-gray-700">Load Data</a></li>
+                        <li><a href="#" class="block p-3 rounded-lg hover:bg-gray-700">Setting 3</a></li>
+                    </ul>
+                </details>
+            </li>
+        {% endif %}
+        <li class="mt-auto">
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button
+                    type="submit"
+                    class="flex items-center p-4 text-lg w-full text-left rounded-lg
+                        hover:bg-gray-700 active:bg-gray-600 transition duration-200 ease-in-out"
+                >
+                    <i class="fas fa-sign-out-alt text-lg"></i>
+                    <span class="ml-3">Logout</span>
+                </button>
+            </form>
+        </li>
+    </ul>
+</aside>

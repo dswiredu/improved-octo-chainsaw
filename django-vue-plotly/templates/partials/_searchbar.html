@@ -1,0 +1,103 @@
+<div class="relative">
+    <div class="relative">
+        <!-- Search Input -->
+        <input 
+            type="text" 
+            id="tickerSearch" 
+            class="w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-800"
+            placeholder="Search by symbol or name..."
+            autocomplete="off"
+        >
+        <!-- Search Icon -->
+        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+    </div>
+
+    <!-- Suggestions Dropdown -->
+    <ul 
+        id="searchResults" 
+        class="absolute bg-white border border-gray-300 rounded-lg shadow-lg mt-2 w-full hidden z-50 overflow-hidden"
+    >
+      <!-- JS will populate results here -->
+    </ul>
+</div>
+
+  <script>
+    const tickerSearchInput = document.getElementById("tickerSearch");
+    const searchResultsEl = document.getElementById("searchResults");
+  
+    let activeRequest = null;
+  
+    tickerSearchInput.addEventListener("input", async function() {
+      const query = this.value.trim();
+      if (!query) {
+        // Hide dropdown if empty
+        searchResultsEl.innerHTML = "";
+        searchResultsEl.classList.add("hidden");
+        return;
+      }
+  
+      // Cancel previous request if still running (optional)
+      if (activeRequest) {
+        activeRequest.abort && activeRequest.abort();
+      }
+  
+      try {
+        // Make a fetch to /search_suggestions/?q=...
+        const controller = new AbortController();
+        activeRequest = controller; // store reference to cancel if needed
+  
+        const resp = await fetch(`/search_suggestions/?q=${encodeURIComponent(query)}`, {
+          signal: controller.signal
+        });
+        if (!resp.ok) throw new Error("Network response not ok");
+        
+        const data = await resp.json();
+        showSuggestions(data);
+      } catch (err) {
+        if (err.name === "AbortError") {
+          // request was canceled, do nothing
+        } else {
+          console.error("Fetch error:", err);
+        }
+      }
+    });
+  
+    function showSuggestions(tickers) {
+      if (!tickers.length) {
+        searchResultsEl.innerHTML = "<li class='p-2 text-gray-500'>No results found</li>";
+        searchResultsEl.classList.remove("hidden");
+        return;
+      }
+      // Build list items
+      let html = "";
+      tickers.forEach(t => {
+        html += `
+          <li 
+            class="p-2 hover:bg-gray-200 cursor-pointer"
+            data-symbol="${t.symbol}"
+          >
+            <strong>${t.symbol}</strong> - ${t.name}
+          </li>
+        `;
+      });
+      searchResultsEl.innerHTML = html;
+      searchResultsEl.classList.remove("hidden");
+    }
+  
+    // Click handler for the suggestions
+    searchResultsEl.addEventListener("click", function(e) {
+      const li = e.target.closest("li[data-symbol]");
+      if (!li) return; // user clicked outside a suggestion
+      const sym = li.getAttribute("data-symbol");
+      // Navigate to the ticker_detail page
+      window.location.href = `/ticker/${sym}/`;
+    });
+  
+    // Hide the dropdown if user clicks elsewhere
+    document.addEventListener("click", (e) => {
+      if (!searchResultsEl.contains(e.target) && e.target !== tickerSearchInput) {
+        searchResultsEl.classList.add("hidden");
+      }
+    });
+  </script>
+  

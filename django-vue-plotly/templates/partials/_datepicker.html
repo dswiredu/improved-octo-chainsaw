@@ -1,0 +1,18 @@
+<!--Generic Date picker partial-->
+<form method="get" action="{% if form_action %}{% url form_action %}{% endif %}" onsubmit="stockApp.showSpinner()">
+    <div class="flex flex-col space-y-2">
+        <label for="date-picker" class="text-sm font-semibold text-gray-700">As Of:</label>
+        <div class="relative">
+            <input 
+                type="date" 
+                id="date-picker"
+                name="selected_date"
+                class="w-full p-3 border border-gray-300 rounded-lg shadow-md focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-800 font-semibold bg-white"
+                value="{{ date_value }}"
+                max="{{ date_max }}"
+                onchange="this.form.submit()"
+            >
+        </div>
+    </div>
+</form>
+
