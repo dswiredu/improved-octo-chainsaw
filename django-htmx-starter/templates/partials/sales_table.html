@@ -1,0 +1,100 @@
+<div class="mb-2">
+    <input type="text" id="search" placeholder="Search table..." class="input input-bordered w-full p-2" 
+           onkeyup="filterTable()">
+</div>
+<div class="overflow-y-auto min-h-[450px] max-h-[450px] border border-gray-300 rounded-lg shadow-md">
+    <table class="table table-xs w-full border-collapse border border-gray-300 text-sm">
+        <thead class="sticky top-0">
+            <tr class="hover:bg-gray-200 transition-all {% cycle 'bg-gray-50' '' %}">
+                <th class="p-2 border border-gray-300 cursor-pointer" onclick="sortTable(0)">Date</th>
+                <th class="p-2 border border-gray-300 cursor-pointer" onclick="sortTable(1)">Customer</th>
+                <th class="p-2 border border-gray-300 cursor-pointer" onclick="sortTable(2)">Product</th>
+                <th class="p-2 border border-gray-300 cursor-pointer text-center" onclick="sortTable(3)">Quantity</th>
+                <th class="p-2 border border-gray-300 cursor-pointer text-center" onclick="sortTable(4)">Total Price</th>
+                <th class="p-2 border border-gray-300 cursor-pointer text-center" onclick="sortTable(4)">Change</th>
+            </tr>
+        </thead>
+        <tbody id="sales-table-body">
+            {% for sale in sales_data %}
+            <tr class="hover:bg-gray-200 transition-all">
+                <td class="p-2 border border-gray-30">{{ sale.date }}</td>
+                <td class="p-2 border border-gray-300">{{ sale.customer }}</td>
+                <td class="p-2 border border-gray-300">{{ sale.product }}</td>
+                <td class="p-2 border border-gray-300 text-center">{{ sale.quantity }}</td>
+                <td class="p-2 border border-gray-300 text-right">${{ sale.total_price }}</td>
+                <td class="p-2 border border-gray-300 text-right {% if sale.change >= 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                    {{ sale.change|floatformat:2 }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination Controls -->
+<div class="bg-white shadow-md p-2 flex justify-between">
+    <button onclick="prevPage()" class="btn btn-primary">Previous</button>
+    <span id="page-info" class="text-gray-700"></span>
+    <button onclick="nextPage()" class="btn btn-primary">Next</button>
+</div>
+
+<script>
+function filterTable() {
+    let input = document.getElementById("search").value.toLowerCase();
+    let rows = document.querySelectorAll("#sales-table-body tr");
+    rows.forEach(row => {
+        let text = row.innerText.toLowerCase();
+        row.style.display = text.includes(input) ? "" : "none";
+    });
+}
+
+function sortTable(columnIndex) {
+    let table = document.querySelector("#sales-table-body");
+    let rows = Array.from(table.rows);
+    let ascending = table.getAttribute("data-sort") !== "asc";
+    table.setAttribute("data-sort", ascending ? "asc" : "desc");
+
+    rows.sort((rowA, rowB) => {
+        let cellA = rowA.cells[columnIndex].innerText.trim();
+        let cellB = rowB.cells[columnIndex].innerText.trim();
+        let isNumber = !isNaN(cellA) && !isNaN(cellB);
+        if (isNumber) {
+            cellA = parseFloat(cellA);
+            cellB = parseFloat(cellB);
+        }
+        return ascending ? (cellA > cellB ? 1 : -1) : (cellA < cellB ? 1 : -1);
+    });
+    table.innerHTML = "";
+    rows.forEach(row => table.appendChild(row));
+}
+
+let currentPage = 1;
+const rowsPerPage = 20;
+
+function updateTable() {
+    let rows = document.querySelectorAll("#sales-table-body tr");
+    let totalRows = rows.length;
+    let totalPages = Math.ceil(totalRows / rowsPerPage);
+    document.getElementById("page-info").innerText = `Page ${currentPage} of ${totalPages}`;
+    rows.forEach((row, index) => {
+        row.style.display = (index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage) ? "" : "none";
+    });
+}
+
+function nextPage() {
+    let rows = document.querySelectorAll("#sales-table-body tr").length;
+    if (currentPage * rowsPerPage < rows) {
+        currentPage++;
+        updateTable();
+    }
+}
+
+function prevPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        updateTable();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", updateTable);
+</script>

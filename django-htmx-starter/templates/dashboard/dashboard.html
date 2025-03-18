@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="ml-64 p-6 bg-gray-100 h-screen">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold text-gray-800">Financial Dashboard</h1>
+            {% include "partials/datepicker.html" %}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            {% include "partials/summary_cards.html" %}
+        </div>
+
+        <div class="bg-white p-4 shadow-md rounded-lg mb-6">
+            <div class="flex justify-between items-center mb-2">
+                
+                <div class="relative">
+                    <select id="chart-type" class="appearance-none p-2 pr-8 text-gray-800 font-semibold text-lg rounded-md"
+                            hx-get="/update-chart/" 
+                            hx-trigger="change, #period-type:change, #date-picker:change" 
+                            hx-target="#line-chart-container"
+                            hx-swap="innerHTML"
+                            name="chart_type"
+                            hx-include="#period-type, #date-picker">
+                        <option value="market_prices" selected>Market Prices</option>
+                        <option value="cumulative_returns">Cumulative Returns</option>
+                    </select>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="absolute right-3 top-2.5 h-6 w-6 text-gray-700 font-bold pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                
+                <div class="relative">
+                    <label for="period-type" class="sr-only">Select Period</label>
+                    <select id="period-type" class="appearance-none p-2 pr-8 text-gray-800 font-semibold bg-gray-100 text-lg rounded-md"
+                            hx-get="/update-chart/"
+                            hx-trigger="change, #chart-type:change, #date-picker:change"
+                            hx-target="#line-chart-container"
+                            hx-swap="innerHTML"
+                            name="period_type"
+                            hx-include="#chart-type, #date-picker"> <!--Ensures chart-type is also sent-->
+                        <option value="D" selected>Daily</option>
+                        <option value="ME">Monthly</option>
+                        <option value="QE">Quarterly</option>
+                        <option value="YE">Annually</option>
+                    </select>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="absolute right-3 top-2.5 h-6 w-6 text-gray-700 font-bold pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </div>
+            
+            <div id="line-chart-container" class="min-h-[450px] opacity-100 transition-opacity duration-500">
+                {{ line_chart|safe }}
+            </div>            
+        </div>
+
+        <!-- Row for Pie Chart and Bar Chart -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 min-h-[450px] mb-6">
+            <!-- Pie Chart Section -->
+            <div class="bg-white p-4 shadow-md rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">Revenue Breakdown</h3>
+                <div id="bar-chart-container" class="min-h-[450px] opacity-100 transition-opacity duration-500">
+                    {{ pie_chart|safe }}
+                </div>
+            </div>
+            
+            <!-- Bar Chart Section -->
+            <div class="bg-white p-4 shadow-md rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">Expense Distribution</h3>
+                <div id="bar-chart-container" class="min-h-[450px] opacity-100 transition-opacity duration-500">
+                    {{ bar_chart|safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Row for Sales data-->
+            {% include "partials/sales_table.html" %}
+    </div>
+{% endblock %}
