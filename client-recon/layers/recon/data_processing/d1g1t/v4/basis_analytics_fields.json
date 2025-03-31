@@ -1,0 +1,32 @@
+{
+  "column_map" : {
+    "Date": "date",
+    "CustodianAccount": "account",
+    "Position": "instrument",
+    "Quantity": "units",
+    "ValueIoc": "mv_dirty",
+    "Value": "mv_dirty_irc",
+    "BookValueIoc": "bv",
+    "BookValue": "bv_irc",
+    "ValueFunc|RepOrOwnCcy.RepCcy|InstrOrCash.Total|AssetAccTp.Total|LongOrShort.Total|SettledOrUnsettled.Total|CleanOrDirty.Accrued|Period.Accounting": "ai_irc",
+    "ValueFunc|RepOrOwnCcy.OwnCcy|InstrOrCash.Total|AssetAccTp.Total|LongOrShort.Total|SettledOrUnsettled.Total|CleanOrDirty.Accrued|Period.Accounting": "ai",
+    "PnlFunc|DailyOrCumul.Cumul|AccOrInvest.Invest|NetOrGross.Net": "cumulpnl_t",
+    "p_ReturnDenomAnlFunc|AccOrInvest.Invest|ReturnDenomAnlTp.BodVal": "return_denominator",
+    "p_ReturnDenomAnlFunc|AccOrInvest.Invest|ReturnDenomAnlTp.PotentialBodExtCash": "cashflow",
+    "SettledBookValue": "bv_settle_irc",
+    "SettledQuantity": "units_settle",
+    "SettledValue": "mv_dirty_settle_irc",
+    "AccruedValueFunc|Period.Accounting|RealizedOrUnrealized.Unrealized|SettledOrUnsettled.Settled|DailyOrCumul.Cumul|RepOrOwnCcy.RepCcy": "ai_settle_irc"
+  },
+  "non-reporting-currency-fields": [
+    "date",
+    "account",
+    "instrument",
+    "mv_dirty_irc",
+    "ai_irc",
+    "ai_settle_irc",
+    "bv_irc",
+    "bv_settle_irc",
+    "mv_dirty_settle_irc"
+  ]
+}

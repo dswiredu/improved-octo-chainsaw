@@ -1,0 +1,24 @@
+{
+  "column_map" : {
+    "Date": "date",
+    "CustodianAccount": "account",
+    "Position": "instrument",
+    "Quantity": "units",
+    "CleanValueIoc": "mv_clean",
+    "CleanValue": "mv_clean_irc",
+    "ValueIoc": "mv_dirty",
+    "Value": "mv_dirty_irc",
+    "BookValueIoc": "bv",
+    "BookValue": "bv_irc",
+    "PnlFunc|DailyOrCumul.Cumul|AccOrInvest.Invest|NetOrGross.Net": "cumulpnl_t",
+    "p_ReturnDenomAnlFunc|AccOrInvest.Invest|ReturnDenomAnlTp.BodVal": "return_denominator",
+    "p_ReturnDenomAnlFunc|AccOrInvest.Invest|ReturnDenomAnlTp.PotentialBodExtCash": "cashflow"
+  },
+  "non-reporting-currency-fields": [
+    "account",
+    "instrument",
+    "mv_clean_irc",
+    "mv_dirty_irc",
+    "bv_irc"
+  ]
+}
