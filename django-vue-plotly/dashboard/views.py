@@ -1,13 +1,17 @@
 from collections import defaultdict
 from datetime import datetime, timedelta, date
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.core.cache import cache
 from django.http import JsonResponse
 from django.db.models import Q
 import plotly.express as px
+import pandas as pd
+import numpy as np
 
 from .models import Ticker, HistoricalPrice
+
+from .utils.analytics import get_historical_prices_df
 
 # Create your views here.
 
@@ -154,3 +158,99 @@ def ticker_suggestions(request):
         {"symbol": t.symbol, "name": t.name} for t in matches
     ]
     return JsonResponse(results, safe=False)
+
+def compare_tickers(request):
+    return render(request, "dashboard/compare_tickers.html", {})
+
+def compare_line_chart(request):
+    tickers_param = request.POST.get('tickers', '')
+    ticker_symbols = [t.strip() for t in tickers_param.split(',') if t.strip()]
+
+    print("Tickers selected:", ticker_symbols)
+
+    df = get_historical_prices_df(ticker_symbols)
+
+    if  df.empty:
+        return render(request, 'dashboard/partials/compare_chart.html', {
+            'chart_div': "<div class='text-gray-500'>No data available for selected tickers.</div>"
+        })
+
+    fig = px.line(df, x="Date", y="Close", color="Ticker", title="Ticker Close Prices Comparison")
+
+    fig.update_layout(
+        template="none",
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        xaxis=dict(showgrid=False),
+        yaxis=dict(showgrid=True, gridcolor="rgba(211, 211, 211, 0.3)"),
+        font=dict(color="#1f2937"),
+        hovermode="x unified"  # Makes tooltips compare values across all lines at same x
+    )
+
+    chart_div = fig.to_html(full_html=False)
+
+    return render(request, 'dashboard/partials/compare_chart.html', {'chart_div': chart_div})
+
+def compare_risk_return(request):
+    tickers_param = request.POST.get('tickers', '')
+    ticker_symbols = [t.strip() for t in tickers_param.split(',') if t.strip()]
+    print("Tickers selected:", ticker_symbols)
+
+    df = get_historical_prices_df(ticker_symbols)
+
+    if df.empty:
+        return render(request, 'dashboard/partials/compare_risk_return.html', {
+            'chart_div': "<div class='text-gray-500'>No data available for selected tickers.</div>"
+        })
+
+    all_stats = []
+
+    for symbol in df['Ticker'].unique():
+        subset = df[df['Ticker'] == symbol].sort_values("Date")
+        subset['Return'] = subset['Close'].pct_change()
+
+        # Skip if not enough data points
+        if subset['Return'].dropna().shape[0] < 2:
+            continue
+
+        mean_return = subset['Return'].mean()
+        volatility = subset['Return'].std()
+
+        annualized_return = mean_return * 252
+        annualized_volatility = volatility * np.sqrt(252)
+
+        all_stats.append({
+            "Ticker": symbol,
+            "Annual Return": annualized_return,
+            "Annual Volatility": annualized_volatility,
+        })
+
+    if not all_stats:
+        return render(request, 'dashboard/partials/compare_risk_return.html', {
+            'chart_div': "<div class='text-gray-500'>Not enough data for selected tickers.</div>"
+        })
+
+    stats_df = pd.DataFrame(all_stats)
+
+    fig = px.scatter(
+        stats_df,
+        x='Annual Volatility',
+        y='Annual Return',
+        text='Ticker',
+        title="Risk vs. Return",
+        labels={"Annual Volatility": "Volatility", "Annual Return": "Return"}
+    )
+
+    fig.update_traces(textposition='top center')
+    fig.update_layout(
+        template="none",
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        xaxis=dict(showgrid=True, gridcolor="rgba(211, 211, 211, 0.3)"),
+        yaxis=dict(showgrid=True, gridcolor="rgba(211, 211, 211, 0.3)"),
+        font=dict(color="#1f2937"),
+    )
+
+    chart_div = fig.to_html(full_html=False)
+
+    return render(request, 'dashboard/partials/compare_risk_return.html', {'chart_div': chart_div})

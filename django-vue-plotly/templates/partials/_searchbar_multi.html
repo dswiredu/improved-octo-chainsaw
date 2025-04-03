@@ -1,0 +1,225 @@
+<div class="relative">
+  <div class="relative">
+    <!-- Search Input -->
+    <input 
+        type="text" 
+        id="tickerSearch" 
+        class="w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-md focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-800"
+        placeholder="Search by symbol or name..."
+        autocomplete="off"
+    >
+    <!-- Search Icon -->
+    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+  </div>
+
+  <!-- Suggestions Dropdown -->
+  <ul 
+      id="searchResults" 
+      class="absolute bg-white border border-gray-300 rounded-lg shadow-lg mt-2 w-full hidden z-50 overflow-hidden"
+  >
+    <!-- JS will populate results here -->
+  </ul>
+
+  <!-- Pills + Clear All -->
+  <div class="mt-4 flex flex-wrap gap-2 items-center">
+    <!-- Selected Tickers Pills -->
+    <div id="selected-tickers" class="flex flex-wrap gap-2"></div>
+
+    <!-- Clear All Button -->
+    <button
+      id="clear-all-btn"
+      class="ml-4 px-3 py-1 text-sm text-red-600 border border-red-300 bg-red-50 rounded-full hover:bg-red-100 hidden"
+      type="button"
+    >
+      Clear all
+    </button>
+  </div>
+
+  <!-- Hidden Input for Comma-Separated Tickers -->
+  <input type="hidden" name="tickers" id="selected-tickers-input" value="" />
+
+  <!-- HTMX Forms to Trigger Chart Updates -->
+  <!-- Line Chart -->
+  <form id="lineChartUpdateForm" hx-post="{% url 'compare_line_chart' %}" hx-target="#line-chart-area" hx-swap="innerHTML">
+    {% csrf_token %}
+    <input type="hidden" name="tickers" id="line-chart-tickers-input" value="" />
+  </form>
+
+  <!-- Risk-Return Chart -->
+  <form id="RiskReturnUpdateForm" hx-post="{% url 'compare_risk_return' %}" hx-target="#risk-return-area" hx-swap="innerHTML">
+    {% csrf_token %}
+    <input type="hidden" name="tickers" id="risk-return-tickers-input" value="" />
+  </form>
+</div>
+
+<script>
+  const tickerSearchInput = document.getElementById("tickerSearch");
+  const searchResultsEl = document.getElementById("searchResults");
+  const pillsContainer = document.getElementById("selected-tickers");
+  const hiddenInput = document.getElementById("selected-tickers-input");
+
+  const lineChartHiddenInput = document.getElementById("line-chart-tickers-input");
+  const lineChartUpdateForm = document.getElementById("lineChartUpdateForm");
+
+  const riskReturnHiddenInput = document.getElementById("risk-return-tickers-input");
+  const riskReturnUpdateForm = document.getElementById("RiskReturnUpdateForm");
+
+  const clearAllBtn = document.getElementById("clear-all-btn");
+
+  const selectedTickers = [];
+
+  function updateHiddenInputs(triggerSubmit = true) {
+    const csv = selectedTickers.join(",");
+    hiddenInput.value = csv;
+    lineChartHiddenInput.value = csv;
+    riskReturnHiddenInput.value = csv;
+
+    localStorage.setItem("selectedTickers", JSON.stringify(selectedTickers));
+
+    if (triggerSubmit) {
+      htmx.trigger(lineChartUpdateForm, "submit");
+      htmx.trigger(riskReturnUpdateForm, "submit");
+    }
+  }
+
+  function renderClearButton() {
+    if (selectedTickers.length > 0) {
+      clearAllBtn.classList.remove("hidden");
+    } else {
+      clearAllBtn.classList.add("hidden");
+    }
+  }
+
+  function renderPills() {
+    pillsContainer.innerHTML = "";
+    selectedTickers.forEach((ticker, index) => {
+      const pill = document.createElement("span");
+      pill.className = "flex items-center px-4 py-2 bg-gray-300 text-black-800 border border-black-300 rounded-full text-base font-semibold shadow-sm";
+      pill.style.marginRight = "0.5rem";
+      pill.style.marginBottom = "0.5rem";
+
+      const textSpan = document.createElement("span");
+      textSpan.textContent = ticker;
+
+      const closeBtn = document.createElement("button");
+      closeBtn.className = "ml-3 text-lg font-bold text-blue-600 hover:text-red-500";
+      closeBtn.textContent = "×";
+      closeBtn.type = "button";
+      closeBtn.style.cursor = "pointer";
+      closeBtn.style.border = "none";
+      closeBtn.style.background = "transparent";
+      closeBtn.onclick = () => {
+        selectedTickers.splice(index, 1);
+        renderPills();
+        updateHiddenInputs();
+      };
+
+      pill.appendChild(textSpan);
+      pill.appendChild(closeBtn);
+      pillsContainer.appendChild(pill);
+    });
+
+    renderClearButton();
+  }
+
+  let activeRequest = null;
+
+  tickerSearchInput.addEventListener("input", async function () {
+    const query = this.value.trim();
+    if (!query) {
+      searchResultsEl.innerHTML = "";
+      searchResultsEl.classList.add("hidden");
+      return;
+    }
+
+    if (activeRequest) {
+      activeRequest.abort && activeRequest.abort();
+    }
+
+    try {
+      const controller = new AbortController();
+      activeRequest = controller;
+
+      const resp = await fetch(`/search_suggestions/?q=${encodeURIComponent(query)}`, {
+        signal: controller.signal
+      });
+
+      if (!resp.ok) throw new Error("Network response not ok");
+      const data = await resp.json();
+      showSuggestions(data);
+    } catch (err) {
+      if (err.name !== "AbortError") {
+        console.error("Fetch error:", err);
+      }
+    }
+  });
+
+  function showSuggestions(tickers) {
+    if (!tickers.length) {
+      searchResultsEl.innerHTML = "<li class='p-2 text-gray-500'>No results found</li>";
+      searchResultsEl.classList.remove("hidden");
+      return;
+    }
+
+    let html = "";
+    tickers.forEach(t => {
+      html += `
+        <li 
+          class="p-2 hover:bg-gray-200 cursor-pointer"
+          data-symbol="${t.symbol}"
+        >
+          <strong>${t.symbol}</strong> - ${t.name}
+        </li>
+      `;
+    });
+    searchResultsEl.innerHTML = html;
+    searchResultsEl.classList.remove("hidden");
+  }
+
+  // Handle suggestion selection
+  searchResultsEl.addEventListener("click", function (e) {
+    const li = e.target.closest("li[data-symbol]");
+    if (li) {
+      const ticker = li.dataset.symbol.toUpperCase();
+      if (!selectedTickers.includes(ticker)) {
+        selectedTickers.push(ticker);
+        renderPills();
+        updateHiddenInputs();
+      }
+      tickerSearchInput.value = "";
+      searchResultsEl.classList.add("hidden");
+    }
+  });
+
+  // Clear all selected tickers
+  clearAllBtn.addEventListener("click", () => {
+    selectedTickers.length = 0;
+    renderPills();
+    updateHiddenInputs();
+  });
+
+  // ✅ Restore from localStorage when DOM is ready
+  document.addEventListener("DOMContentLoaded", () => {
+    const saved = localStorage.getItem("selectedTickers");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          selectedTickers.length = 0;
+          parsed.forEach(t => selectedTickers.push(t));
+          renderPills();
+          updateHiddenInputs(true); // Ensures charts render on reload
+        }
+      } catch (err) {
+        console.warn("Failed to restore saved tickers:", err);
+      }
+    }
+  });
+
+  // Hide dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!searchResultsEl.contains(e.target) && e.target !== tickerSearchInput) {
+      searchResultsEl.classList.add("hidden");
+    }
+  });
+</script>

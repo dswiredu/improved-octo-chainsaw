@@ -1,0 +1,19 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+  <div class="p-6 bg-gray-100 h-screen">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-2xl font-bold text-gray-800">Compare Tickers</h1>
+      <!--Add date picker here.-->
+    </div>
+
+    <!-- Enhanced Ticker Search + Selected Pills -->
+    <div id="ticker-search" class="grid grid-cols-1 md:grid-cols-2 gap-4 m-2">
+      {% include "partials/_searchbar_multi.html" %}
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 m-1">
+      <div class="col-span-1 md:col-span-2" id="line-chart-area"></div>
+      <div class="col-span-1 md:col-span-2" id="risk-return-area"></div>
+    </div>
+  </div>
+{% endblock %}

@@ -26,6 +26,9 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.4"></script>
+
     <!-- Vue.js (CDN) -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
@@ -38,9 +41,6 @@
         {% include "partials/_sidebar.html" %}
         <div class="ml-64 flex-1 flex flex-col bg-gray-100">
             <main class="p-6">
-                <div class="m-2">
-                    {% include "partials/_searchbar.html" %}
-                </div>
                 {% block content %}{% endblock %}
             </main>
         </div>
