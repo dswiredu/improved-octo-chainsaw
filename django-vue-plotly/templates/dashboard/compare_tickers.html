@@ -8,11 +8,16 @@
     </div>
 
     <!-- Enhanced Ticker Search + Selected Pills -->
-    <div id="ticker-search" class="grid grid-cols-1 md:grid-cols-2 gap-4 m-2">
-      {% include "partials/_searchbar_multi.html" %}
+    <div id="ticker-search" class="sticky top-0 z-50 bg-gray-100 p-2 shadow-sm">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% include "partials/_searchbar_multi.html" %}
+      </div>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 m-1">
-      <div class="col-span-1 md:col-span-2" id="line-chart-area"></div>
+
+    <div id="line-chart-area"></div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-3">
+      <div class="col-span-1 md:col-span-2" id="max-drawdown-area"></div>
       <div class="col-span-1 md:col-span-2" id="risk-return-area"></div>
     </div>
   </div>

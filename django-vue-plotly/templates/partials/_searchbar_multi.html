@@ -50,6 +50,16 @@
     {% csrf_token %}
     <input type="hidden" name="tickers" id="risk-return-tickers-input" value="" />
   </form>
+
+  <form id="maxDrawdownForm" hx-post="{% url 'compare_max_drawdown' %}" hx-target="#max-drawdown-area" hx-swap="innerHTML">
+    {% csrf_token %}
+    <input type="hidden" name="tickers" id="max-drawdown-input" />
+  </form>
+
+  <form id="sharpeRatioForm" hx-post="{% url 'compare_sharpe_ratio' %}" hx-target="#sharpe-ratio-area" hx-swap="innerHTML">
+    {% csrf_token %}
+    <input type="hidden" name="tickers" id="sharpe-ratio-input" />
+  </form>
 </div>
 
 <script>
@@ -64,6 +74,12 @@
   const riskReturnHiddenInput = document.getElementById("risk-return-tickers-input");
   const riskReturnUpdateForm = document.getElementById("RiskReturnUpdateForm");
 
+  const maxDrawdownInput = document.getElementById("max-drawdown-input");
+  const maxDrawdownForm = document.getElementById("maxDrawdownForm");
+
+  const sharpeRatioInput = document.getElementById("sharpe-ratio-input");
+  const sharpeRatioForm = document.getElementById("sharpeRatioForm");
+
   const clearAllBtn = document.getElementById("clear-all-btn");
 
   const selectedTickers = [];
@@ -73,12 +89,16 @@
     hiddenInput.value = csv;
     lineChartHiddenInput.value = csv;
     riskReturnHiddenInput.value = csv;
+    maxDrawdownInput.value = csv;
+    sharpeRatioInput.value = csv;
 
     localStorage.setItem("selectedTickers", JSON.stringify(selectedTickers));
 
     if (triggerSubmit) {
       htmx.trigger(lineChartUpdateForm, "submit");
       htmx.trigger(riskReturnUpdateForm, "submit");
+      htmx.trigger(maxDrawdownForm, "submit");
+      htmx.trigger(sharpeRatioForm, "submit");
     }
   }
 
