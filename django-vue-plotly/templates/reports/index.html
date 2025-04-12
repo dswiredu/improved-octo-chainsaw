@@ -1,0 +1,81 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<div class="p-6 bg-gray-100 min-h-screen">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Reports</h1>
+    <button class="btn btn-primary" onclick="report_modal.showModal()">
+      Generate Report
+    </button>
+  </div>
+
+  <!-- Table of previous report runs -->
+  <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+    <table class="table w-full">
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Report Type</th>
+          <th>Status</th>
+          <th>Run At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in reports %}
+          <tr>
+            <td>{{ report.ticker }}</td>
+            <td>{{ report.get_report_type_display }}</td>
+            <td>
+              <span class="badge {% if report.status == 'success' %}badge-success{% else %}badge-error{% endif %}">
+                {{ report.status|capfirst }}
+              </span>
+            </td>
+            <td>{{ report.run_at|date:"Y-m-d H:i" }}</td>
+            <td>
+              <form method="POST" action="{% url 'generate_report_pdf' %}">
+                {% csrf_token %}
+                <input type="hidden" name="ticker" value="{{ report.ticker }}">
+                <input type="hidden" name="template" value="{{ report.report_type }}">
+                <button class="btn btn-sm btn-outline btn-info">Re-run</button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5" class="text-center text-gray-500">No reports have been run yet.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DaisyUI Modal -->
+  <dialog id="report_modal" class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Generate Report</h3>
+      <form method="POST" action="{% url 'generate_report_pdf' %}" class="space-y-4">
+        {% csrf_token %}
+        <div>
+          <label class="block mb-1 font-medium">Ticker Symbol</label>
+          <input type="text" name="ticker" placeholder="e.g. AAPL" class="input input-bordered w-full" />
+        </div>
+        <div>
+          <label class="block mb-1 font-medium">Report Type</label>
+          <select name="template" class="select select-bordered w-full">
+            <option value="performance">Performance Summary</option>
+            <option value="risk">Risk & Return</option>
+            <option value="compare">Compare With Peers</option>
+          </select>
+        </div>
+        <div class="modal-action">
+          <button type="submit" class="btn btn-primary">Generate</button>
+          <form method="dialog">
+            <button class="btn">Cancel</button>
+          </form>
+        </div>
+      </form>
+    </div>
+  </dialog>
+</div>
+{% endblock %}

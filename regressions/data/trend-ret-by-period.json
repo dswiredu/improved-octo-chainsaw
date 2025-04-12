@@ -1,0 +1,34 @@
+{
+    "options": {
+        "drilldown_dimension": "toplevel",
+        "time_series": "monthly",
+        "treatment_of_fx": "FXincluded",
+        "return_type": "g",
+        "metric_type": "$",
+        "single_result": true,
+        "date_range": {
+            "value": "since_inception",
+            "label": "Since Inception"
+        },
+        "look_through": false
+    },
+    "control": {
+        "selected_entities": {
+            "accounts_or_positions": [
+                [
+                    "82d2457a-4c51-49ba-bdad-9ec1ddde1f94"
+                ]
+            ],
+            "account_display_names": [
+                "Rather Brazen"
+            ]
+        }
+    },
+    "settings": {
+        "currency": "USD",
+        "date": {
+            "date": "2023-11-15",
+            "value": "specificDate"
+        }
+    }
+}

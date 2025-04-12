@@ -1,0 +1,35 @@
+{
+    "options": {
+        "time_series": "monthly",
+        "single_result": true,
+        "date_range": {
+            "value": "since_inception",
+            "label": "Since Inception"
+        }
+    },
+    "control": {
+        "selected_entities": {
+            "accounts_or_positions": [
+                [
+                    "0e72b34f-ebf6-4403-8039-b152a9b5add6"
+                ]
+            ],
+            "account_display_names": [
+                "Daniel Lamarre"
+            ]
+        }
+    },
+    "settings": {
+        "currency": "CAD",
+        "date": {
+            "date": "2024-01-31",
+            "value": "specificDate"
+        }
+    },
+    "groups": {
+        "selected": []
+    },
+    "metrics": {
+        "selected": []
+    }
+}

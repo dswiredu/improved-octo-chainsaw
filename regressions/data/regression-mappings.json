@@ -1,0 +1,96 @@
+{
+    "bbr-compare": {
+        "str_cols" : [
+            "account",
+            "d1g1t_id",
+            "bbr_id"
+        ],
+        "date_column": "date",
+        "merge_columns": [
+            "date",
+            "account",
+            "d1g1t_id",
+            "bbr_id"
+        ],
+        "metrics": [
+            "units",
+            "mv",
+            "mv_acct_ccy",
+            "ai"
+        ]
+    },
+    "quantity-mv": {
+        "str_cols": [
+            "account",
+            "instrument"
+        ],
+        "date_column": "date",
+        "merge_columns": [
+            "date",
+            "account",
+            "instrument"
+        ],
+        "metrics": [
+            "units",
+            "price",
+            "mv",
+            "ai"
+        ]
+    },
+    "net-asset-value-history": {
+        "str_cols": [
+            "firm_provided_key"
+        ],
+        "date_column": "Date",
+        "merge_columns": [
+            "Date",
+            "firm_provided_key"
+        ],
+        "metrics": [
+            "Market Value BoP",
+            "Net Deposits",
+            "Deposits",
+            "Withdrawals",
+            "Gain",
+            "Gross Gain",
+            "Fees",
+            "Management Fees",
+            "Performance Fees",
+            "Other Fees",
+            "Expenses",
+            "Interest",
+            "Total Return",
+            "Market Value EoP"
+        ]
+    },
+    "summary-single": {
+        "str_cols": [
+            "firm_provided_key",
+            "Name1",
+            "Name2",
+            "Name3"
+        ],
+        "merge_columns": [
+            "firm_provided_key",
+            "Name1",
+            "Name2",
+            "Name3"
+        ],
+        "metrics": [
+            "Value"
+        ]
+    },
+    "default": {
+        "str_cols": [
+            "firm_provided_key"
+        ],
+        "date_column": "Date",
+        "merge_columns": [
+            "Date",
+            "firm_provided_key"
+        ],
+        "metrics": [
+            "Total Portfolio"
+        ]
+    }
+}

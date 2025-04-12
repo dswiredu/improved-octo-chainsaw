@@ -1,0 +1,29 @@
+{
+    "options": {
+        "single_result": true,
+        "date_range": {
+            "value": "since_inception",
+            "label": "Since Inception"
+        },
+        "look_through": false
+    },
+    "control": {
+        "selected_entities": {
+            "accounts_or_positions": [
+                [
+                    "2541f0ae-7a86-4733-b916-6feb68a8fd18"
+                ]
+            ],
+            "account_display_names": [
+                "DreamScapes"
+            ]
+        }
+    },
+    "settings": {
+        "currency": "USD",
+        "date": {
+            "date": "2023-06-15",
+            "value": "specificDate"
+        }
+    }
+}
