@@ -1,0 +1,23 @@
+<aside class="bg-gray-800 text-white shadow-md p-4 flex flex-col h-screen fixed transition-all duration-300 ease-in-out w-64">
+    <!-- Sidebar Header -->
+    <h2 class="text-lg font-bold text-center tracking-wide border-b border-gray-600 pb-3 mb-4">
+        <span>pALM Labs</span>
+    </h2>
+
+    <!-- Navigation Menu -->
+    <ul class="menu space-y-3">
+        <li>
+            <a href="{% url "dashboard" %}" class="flex items-center p-2 text-lg rounded-lg hover:bg-gray-700 active:bg-gray-600">
+                <i class="fas fa-chart-line text-lg"></i>
+                <span class="ml-2">Overview</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="flex items-center p-2 text-lg rounded-lg hover:bg-gray-700 active:bg-gray-600">
+                <i class="fas fa-chart-bar text-lg"></i>
+                <span class="ml-2">Analytics</span>
+            </a>
+        </li>
+    </ul>
+</aside>
+

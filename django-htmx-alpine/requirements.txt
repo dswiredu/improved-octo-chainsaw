@@ -1,0 +1,5 @@
+pandas
+plotly[express]
+django
+python-dotenv
+psycopg2
