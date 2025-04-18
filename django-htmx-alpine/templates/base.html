@@ -23,14 +23,19 @@
     <!-- Alpine.js -->
     <script src="https://unpkg.com/alpinejs" defer></script>
 
+    <!-- Alpine x-cloak support -->
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+
     {% block head_extra %}{% endblock %}
 </head>
 <body class="bg-base-200 bg-gray-100 min-h-screen">
 
-    <div class="flex h-screen">
+    <div class="flex">
         {% include "partials/_sidebar.html" %}
         <div class="ml-64 flex-1 flex flex-col bg-gray-100">
-            <main class="p-6">
+            <main class="p-4">
                 {% block content %}{% endblock %}
             </main>
         </div>

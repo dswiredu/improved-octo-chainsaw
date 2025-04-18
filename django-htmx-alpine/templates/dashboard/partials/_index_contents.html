@@ -1,3 +1,14 @@
+{% load humanize %}
+
 <div class="text-lg font-medium text-gray-800">
     Selected date: {{ selected_date }}
 </div>
+
+<ul class="text-gray-700 text-base space-y-1">
+    <li><strong>Date:</strong> {{ price_data.date }}</li>
+    <li><strong>Open:</strong> {{ price_data.open_price }}</li>
+    <li><strong>Close:</strong> {{ price_data.close_price }}</li>
+    <li><strong>High:</strong> {{ price_data.high_price }}</li>
+    <li><strong>Low:</strong> {{ price_data.low_price }}</li>
+    <li><strong>Volume:</strong> {{ price_data.volume|intcomma }}</li>
+</ul>
