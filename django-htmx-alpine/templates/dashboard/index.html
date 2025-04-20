@@ -4,52 +4,60 @@
 {% block title %}Stock Price Analytics{% endblock %}
 
 {% block content %}
-    <div class="p-2 bg-gray-100 h-screen">
-        <div class="flex justify-between items-center">
-            <h1 class="text-2xl font-semibold text-gray-500">Overview</h1>
-            {% include "partials/_datepicker.html" %}
-        </div>
-
-        <!-- Animated loading wrapper -->
-        <div 
-            x-data="{ loading: true }" 
-            x-init="setTimeout(() => loading = false, 100)"
-        >
-            <!-- Minimal bar loading indicator -->
-            <template x-if="loading">
-                <div class="flex justify-center items-center h-36 w-full col-span-5">
-                    <div class="flex space-x-2">
-                        <div class="w-2 h-6 bg-gray-400 animate-bounce rounded"></div>
-                        <div class="w-2 h-6 bg-gray-400 animate-bounce delay-150 rounded"></div>
-                        <div class="w-2 h-6 bg-gray-400 animate-bounce delay-300 rounded"></div>
-                    </div>
-                </div>
-            </template>
-
-            <!-- Real Summary Cards -->
-            <template x-if="!loading">
-                <div 
-                    class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 transition-opacity duration-500 ease-in-out"
-                    x-transition.opacity
-                >
-                    {% include "dashboard/partials/summary_cards.html" %}
-                </div>
-            </template>
-        </div>
-
-        <div id="index-contents-container" class="flex justify-between items-center mb-4">
-            <p class="text-lg font-medium text-gray-800">
-                Selected date: {{initial_date}}
-            </p>
-
-            <ul class="text-gray-700 text-base space-y-1">
-                <li><strong>Date:</strong> {{ price_data.date }}</li>
-                <li><strong>Open:</strong> {{ price_data.open_price }}</li>
-                <li><strong>Close:</strong> {{ price_data.close_price }}</li>
-                <li><strong>High:</strong> {{ price_data.high_price }}</li>
-                <li><strong>Low:</strong> {{ price_data.low_price }}</li>
-                <li><strong>Volume:</strong> {{ price_data.volume|intcomma }}</li>
-            </ul>
-        </div>
+<div class="p-2 bg-gray-100 min-h-screen">
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-semibold text-gray-500">Overview</h1>
+        {% include "partials/_datepicker.html" %}
     </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+        {% include "dashboard/partials/summary_cards.html" %}
+    </div>
+
+    <div class="bg-white p-4 shadow-md rounded-lg transform transition duration-500 ease-out opacity-0 translate-y-4 mb-6"
+        x-init="setTimeout(() => $el.classList.remove('opacity-0', 'translate-y-4'), 500)"
+    >
+        <div class="flex justify-between items-center mb-2">
+            <div class="relative">
+                <select id="chart-type" class="appearance-none p-2 pr-8 text-gray-800 font-semibold bg-gray-100 text-lg rounded-md"
+                        hx-get="#" 
+                        hx-trigger="change, #period-type:change, #date-picker:change" 
+                        hx-target="#line-chart-container"
+                        hx-swap="innerHTML"
+                        name="chart_type"
+                        hx-include="#period-type, #date-picker">
+                    <option value="market_prices" selected>Market Prices</option>
+                    <option value="cumulative_returns">Cumulative Returns</option>
+                </select>
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute right-3 top-2.5 h-6 w-6 text-gray-700 font-bold pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            
+            <div class="relative">
+                <label for="period-type" class="sr-only">Select Period</label>
+                <select id="period-type" class="appearance-none p-2 pr-8 text-gray-800 font-semibold bg-gray-100 text-lg rounded-md"
+                        hx-get="#"
+                        hx-trigger="change, #chart-type:change, #date-picker:change"
+                        hx-target="#line-chart-container"
+                        hx-swap="innerHTML"
+                        name="period_type"
+                        hx-include="#chart-type, #date-picker"> 
+                    <option value="D" selected>Daily</option>
+                    <option value="ME">Monthly</option>
+                    <option value="QE">Quarterly</option>
+                    <option value="YE">Annually</option>
+                </select>
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute right-3 top-2.5 h-6 w-6 text-gray-700 font-bold pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </div>
+        </div>
+        
+        <div id="line-chart-container" class="min-h-[450px] opacity-100 transition-opacity duration-500">
+            {{ line_chart|safe }}
+        </div>            
+    </div>
+
+</div>
 {% endblock %}

@@ -8,7 +8,7 @@
   <div class="flex justify-between items-center">
     <h3 class="text-lg font-semibold text-gray-500">Open</h3>
     <div class="overflow-hidden">
-      {{ price_data.open_price_sparkline|safe }}
+      <img src="{{ price_data.open_price_sparkline }}" alt="Open Price sparkline" class="h-10 w-auto" />
     </div>
   </div>
   <p class="text-lg font-bold text-gray-800 mt-2">${{ price_data.open_price|floatformat:2|intcomma }}</p>
@@ -26,7 +26,7 @@
   <div class="flex justify-between items-center">
     <h3 class="text-lg font-semibold text-gray-500">High</h3>
     <div class="overflow-hidden">
-      {{ price_data.high_price_sparkline|safe }}
+      <img src="{{ price_data.high_price_sparkline }}" alt="High Price sparkline" class="h-10 w-auto" />
     </div>
   </div>
   <p class="text-lg font-bold text-gray-800 mt-2">${{ price_data.high_price|floatformat:2|intcomma }}</p>
@@ -44,7 +44,7 @@
   <div class="flex justify-between items-center">
     <h3 class="text-lg font-semibold text-gray-500">Close</h3>
     <div class="overflow-hidden">
-      {{ price_data.close_price_sparkline|safe }}
+      <img src="{{ price_data.close_price_sparkline }}" alt="Close Price sparkline" class="h-10 w-auto" />
     </div>
   </div>
   <p class="text-lg font-bold text-gray-800 mt-2">${{ price_data.close_price|floatformat:2|intcomma }}</p>
@@ -62,7 +62,7 @@
   <div class="flex justify-between items-center">
     <h3 class="text-lg font-semibold text-gray-500">Low</h3>
     <div class="overflow-hidden">
-      {{ price_data.low_price_sparkline|safe }}
+      <img src="{{ price_data.low_price_sparkline }}" alt="Low Price sparkline" class="h-10 w-auto" />
     </div>
   </div>
   <p class="text-lg font-bold text-gray-800 mt-2">${{ price_data.low_price|floatformat:2|intcomma }}</p>
@@ -80,7 +80,7 @@
   <div class="flex justify-between items-center">
     <h3 class="text-lg font-semibold text-gray-500">Volume</h3>
     <div class="overflow-hidden">
-      {{ price_data.volume_sparkline|safe }}
+      <img src="{{ price_data.volume_sparkline }}" alt="Volume sparkline" class="h-10 w-auto" />
     </div>
   </div>
   <p class="text-lg font-bold text-gray-800 mt-2">{{ price_data.volume|floatformat:0|intcomma }}</p>

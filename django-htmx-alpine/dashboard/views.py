@@ -8,8 +8,13 @@ from django.core.cache import cache
 from django.db.models import Min, Max
 from .models import HistoricalPrice
 
+import plotly.io as pio
+import base64
+
 from .utils.services import get_historical_prices
 from .utils.analytics import compute_percentage_changes
+
+SPARKLINE_DAYS = 30
 
 def get_price_date_bounds():
     bounds = cache.get("historical_price_date_bounds")
@@ -32,13 +37,15 @@ def index(request):
     initial_date = selected_date or max_date.strftime("%Y-%m-%d")
     print(max_date, min_date, initial_date, sep=" | ")
 
-    df = get_historical_prices(initial_date, days=30)
+    df = get_historical_prices(initial_date)
     sparklines = generate_summary_sparkline(df)
     compute_percentage_changes(df)
+    df.to_csv("full_data.csv", index=False)
     price_data = df.iloc[-1].to_dict()
+    print(price_data)
     price_data.update(sparklines)
-    # print(price_data)
-    # df.to_csv("last_30_dataset.csv", index=False)
+    
+    chart_html = generate_chart(df)
 
     context = {
         "initial_date": initial_date,
@@ -46,7 +53,8 @@ def index(request):
         "price_data": price_data,
         "min_date": min_date.isoformat(),
         "max_date": max_date.isoformat(),
-        "datepicker_years": list(range(max_date.year, min_date.year - 1, -1))  # descending
+        "datepicker_years": list(range(max_date.year, min_date.year - 1, -1)),  # descending
+        "line_chart": chart_html
     }
     return render(request, "dashboard/index.html", context)
 
@@ -54,18 +62,15 @@ def generate_summary_sparkline(df: pd.DataFrame) -> dict:
     """
     Creates a Plotly sparkline using px.line() and returns it as an HTML div.
     """
+    
     res = dict()
+    spark_df = df.tail(SPARKLINE_DAYS)
+    spark_df.to_csv("sparkline_days.csv", index=False)
 
-    config = {
-                "displayModeBar": False,
-                "displaylogo": False,
-                "staticPlot": True 
-            }
-
-    for col in df.columns:
+    for col in spark_df.columns:
         if col != "date":
             # Generate Sparkline using px.line()
-            fig = px.line(df, x=df.index, y=col)
+            fig = px.line(spark_df, x=spark_df.index, y=col)
 
             # Format the chart (minimalist styling)
             fig.update_layout(
@@ -85,27 +90,34 @@ def generate_summary_sparkline(df: pd.DataFrame) -> dict:
                 hoverinfo="skip",
                 hovertemplate=None
                 )
-            # Convert the figure to an HTML div string
-            res[f"{col}_sparkline"] = fig.to_html(full_html=False, config=config)
+            
+            # Export to SVG and encode
+            svg_bytes = pio.to_image(fig, format="svg")
+            base64_svg = base64.b64encode(svg_bytes).decode("utf-8")
+            data_uri = f"data:image/svg+xml;base64,{base64_svg}"
+
+            res[f"{col}_sparkline"] = data_uri
     return res
 
-def update_index_contents(request):
-    selected_date = request.GET.get("selected_date")
-    print(f"Selected date {selected_date}")
+def generate_chart(df): # Need to add period and threshold picker
+    title = "Stock prices"
+    column = "close_price"
 
-    try:
-        parsed_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
-    except (TypeError, ValueError):
-        return HttpResponse("<p class='text-red-500'>Invalid date selected</p>")
-    
-    df = get_historical_prices(selected_date)
-    price_data = df.iloc[-1].to_dict()
-    print(price_data)
-    if df.empty:
-        return HttpResponse("<p class='text-gray-500 italic'>No data for this date.</p>")
+    fig = px.line(df, x="date", y=column, labels={column: "Value ($)"}, title=title)
 
-    context = {
-        "selected_date": parsed_date.strftime("%A, %B %d, %Y"),
-        "price_data": price_data
-    }
-    return render(request, "dashboard/partials/_index_contents.html", context=context)
+    # Apply None theme (transparent background)
+    fig.update_layout(
+        template="none",  # No background styling
+        plot_bgcolor="white",  # Match card background
+        paper_bgcolor="white",
+        xaxis=dict(showgrid=False),  # No vertical grid
+        yaxis=dict(
+            showgrid=True, gridcolor="rgba(211, 211, 211, 0.3)"
+        ),  # Faint horizontal grid
+        font=dict(color="#1f2937"),  # Text color to match the card
+    )
+
+    # Set line color to Dark Blue
+    fig.update_traces(line=dict(color="#1E3A8A"))  # Dark blue color
+
+    return fig.to_html(full_html=False)
