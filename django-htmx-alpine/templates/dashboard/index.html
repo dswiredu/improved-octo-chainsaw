@@ -16,45 +16,86 @@
 
     <div class="bg-white p-4 shadow-md rounded-lg transform transition duration-500 ease-out opacity-0 translate-y-4 mb-6"
         x-init="setTimeout(() => $el.classList.remove('opacity-0', 'translate-y-4'), 500)"
-    >
-        <div class="flex justify-between items-center mb-2">
-            <div class="relative">
-                <select id="chart-type" class="appearance-none p-2 pr-8 text-gray-800 font-semibold bg-gray-100 text-lg rounded-md"
-                        hx-get="#" 
-                        hx-trigger="change, #period-type:change, #date-picker:change" 
+    >   
+        <!-- Graph Controls -->
+        <div class="flex justify-between items-start mb-4 px-2" x-data="{ showMenu: false }">
+            <!-- Left: Metric Selector -->
+            <div class="flex flex-col">
+                <label for="metric-select" class="text-sm font-semibold text-gray-600 mb-1">Metric</label>
+                <div class="relative">
+                    <select id="metric-select" name="metric" class="appearance-none bg-white border border-gray-300 text-gray-800 py-2 px-4 pr-8 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        hx-get={% url "update_chart" %}
+                        hx-trigger="change",
                         hx-target="#line-chart-container"
                         hx-swap="innerHTML"
-                        name="chart_type"
-                        hx-include="#period-type, #date-picker">
-                    <option value="market_prices" selected>Market Prices</option>
-                    <option value="cumulative_returns">Cumulative Returns</option>
-                </select>
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute right-3 top-2.5 h-6 w-6 text-gray-700 font-bold pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
+                        hx-include="#threshold-select, #period-select"
+                    >
+                        <option value="close_price" selected>Close Price</option>
+                        <option value="high_price">High Price</option>
+                        <option value="open_price">Open Price</option>
+                        <option value="volume">Volume</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
             </div>
-            
-            <div class="relative">
-                <label for="period-type" class="sr-only">Select Period</label>
-                <select id="period-type" class="appearance-none p-2 pr-8 text-gray-800 font-semibold bg-gray-100 text-lg rounded-md"
-                        hx-get="#"
-                        hx-trigger="change, #chart-type:change, #date-picker:change"
-                        hx-target="#line-chart-container"
-                        hx-swap="innerHTML"
-                        name="period_type"
-                        hx-include="#chart-type, #date-picker"> 
-                    <option value="D" selected>Daily</option>
-                    <option value="ME">Monthly</option>
-                    <option value="QE">Quarterly</option>
-                    <option value="YE">Annually</option>
-                </select>
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute right-3 top-2.5 h-6 w-6 text-gray-700 font-bold pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
+
+            <!-- Right: Threshold, Periodicity & Menu -->
+            <div class="flex items-end space-x-6">
+                <!-- Crash Threshold -->
+                <div class="flex flex-col">
+                    <label for="threshold-select" class="text-sm font-semibold text-gray-600 mb-1">Crash Threshold</label>
+                    <select id="threshold-select" name="threshold" class="bg-white border border-gray-300 text-gray-800 py-2 px-4 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-20">
+                        <option selected>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                    </select>
+                </div>
+                <!-- Periodicity -->
+                <div class="flex flex-col">
+                    <label for="period-select" class="text-sm font-semibold text-gray-600 mb-1">Periodicity</label>
+                    <div class="relative">
+                        <select id="period-select" name="period" class="appearance-none bg-white border border-gray-300 text-gray-800 py-2 px-4 pr-8 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option selected>Daily</option>
+                            <option>Monthly</option>
+                            <option>Quarterly</option>
+                            <option>Annually</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3‑dot Menu -->
+                <div class="relative pt-6">
+                    <button @click="showMenu = !showMenu" class="text-gray-600 hover:text-gray-900 focus:outline-none">
+                        <i class="fas fa-ellipsis-v text-2xl font-bold"></i>
+                    </button>
+                    <div 
+                        x-show="showMenu" 
+                        @click.away="showMenu = false"
+                        x-transition
+                        class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md z-50"
+                    >
+                        <ul class="text-sm text-gray-800">
+                            <li>
+                                <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Export Data as Excel</button>
+                            </li>
+                            <li>
+                                <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Show Graph as Table</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <div id="line-chart-container" class="min-h-[450px] opacity-100 transition-opacity duration-500">
+
+        <div id="line-chart-container" class="min-h-[500px] opacity-100 transition-opacity duration-500">
             {{ line_chart|safe }}
         </div>            
     </div>

@@ -16,12 +16,12 @@ from .utils.analytics import compute_percentage_changes
 
 SPARKLINE_DAYS = 30
 
+
 def get_price_date_bounds():
     bounds = cache.get("historical_price_date_bounds")
     if not bounds:
         bounds = HistoricalPrice.objects.aggregate(
-            min_date = Min("date"),
-            max_date = Max("date")
+            min_date=Min("date"), max_date=Max("date")
         )
         cache.set("historical_price_date_bounds", bounds, timeout=3600)
     return bounds
@@ -44,7 +44,7 @@ def index(request):
     price_data = df.iloc[-1].to_dict()
     print(price_data)
     price_data.update(sparklines)
-    
+
     chart_html = generate_chart(df)
 
     context = {
@@ -53,16 +53,19 @@ def index(request):
         "price_data": price_data,
         "min_date": min_date.isoformat(),
         "max_date": max_date.isoformat(),
-        "datepicker_years": list(range(max_date.year, min_date.year - 1, -1)),  # descending
-        "line_chart": chart_html
+        "datepicker_years": list(
+            range(max_date.year, min_date.year - 1, -1)
+        ),  # descending
+        "line_chart": chart_html,
     }
     return render(request, "dashboard/index.html", context)
+
 
 def generate_summary_sparkline(df: pd.DataFrame) -> dict:
     """
     Creates a Plotly sparkline using px.line() and returns it as an HTML div.
     """
-    
+
     res = dict()
     spark_df = df.tail(SPARKLINE_DAYS)
     spark_df.to_csv("sparkline_days.csv", index=False)
@@ -86,11 +89,9 @@ def generate_summary_sparkline(df: pd.DataFrame) -> dict:
             )
 
             fig.update_traces(
-                line=dict(color="#1E3A8A"),
-                hoverinfo="skip",
-                hovertemplate=None
-                )
-            
+                line=dict(color="#1E3A8A"), hoverinfo="skip", hovertemplate=None
+            )
+
             # Export to SVG and encode
             svg_bytes = pio.to_image(fig, format="svg")
             base64_svg = base64.b64encode(svg_bytes).decode("utf-8")
@@ -99,11 +100,9 @@ def generate_summary_sparkline(df: pd.DataFrame) -> dict:
             res[f"{col}_sparkline"] = data_uri
     return res
 
-def generate_chart(df): # Need to add period and threshold picker
-    title = "Stock prices"
-    column = "close_price"
 
-    fig = px.line(df, x="date", y=column, labels={column: "Value ($)"}, title=title)
+def generate_chart(df, column="close_price"):  # Need to add period and threshold picker
+    fig = px.line(df, x="date", y=column, labels={column: "Value ($)"})
 
     # Apply None theme (transparent background)
     fig.update_layout(
@@ -121,3 +120,16 @@ def generate_chart(df): # Need to add period and threshold picker
     fig.update_traces(line=dict(color="#1E3A8A"))  # Dark blue color
 
     return fig.to_html(full_html=False)
+
+
+def update_line_chart(request):
+    metric_select = request.GET.get("metric")
+    crash_threshold = request.GET.get("threshold")
+    period = request.GET.get("period")
+    selected_date = request.GET["selected_date"]
+
+    print(metric_select, crash_threshold, period, selected_date, sep=" | ")
+
+    df = get_historical_prices(selected_date)
+    chart_html = generate_chart(df, column=metric_select)
+    return HttpResponse(chart_html)

@@ -1,23 +1,83 @@
-<aside class="bg-gray-800 text-white shadow-md p-4 flex flex-col h-screen fixed transition-all duration-300 ease-in-out w-64">
-    <!-- Sidebar Header -->
-    <h2 class="text-lg font-bold text-center tracking-wide border-b border-gray-600 pb-3 mb-4">
-        <span>pALM Labs</span>
-    </h2>
-
-    <!-- Navigation Menu -->
-    <ul class="menu space-y-3">
-        <li>
-            <a href="{% url "dashboard" %}" class="flex items-center p-2 text-lg font-semibold rounded-lg hover:bg-gray-700 active:bg-gray-600">
-                <i class="fas fa-chart-line text-lg"></i>
-                <span class="ml-2">Overview</span>
-            </a>
-        </li>
-        <li>
-            <a href="#" class="flex items-center p-2 text-lg font-semibold rounded-lg hover:bg-gray-700 active:bg-gray-600">
-                <i class="fas fa-chart-bar text-lg"></i>
-                <span class="ml-2">Analytics</span>
-            </a>
-        </li>
-    </ul>
-</aside>
-
+<!-- partials/_sidebar.html (gray palette) -->
+<div
+   x-data="{ open: false }"
+   @mouseenter="open = true"
+   @mouseleave="open = false"
+   class="fixed top-0 left-0 h-screen bg-base-100 shadow-lg transition-all duration-200 z-50 overflow-hidden"
+   :class="open ? 'w-64' : 'w-16'"
+ >
+   {% with request.resolver_match.url_name as current %}
+   <ul class="pt-4 space-y-1">
+     <!-- Overview -->
+     <li>
+       <a
+         href="{% url 'overview' %}"
+         class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150
+                hover:bg-gray-700 hover:text-white
+                {% if current == 'overview' %}bg-gray-500 text-white{% endif %}"
+       >
+         <i class="fa-solid fa-house text-lg"></i>
+         <span x-show="open" x-transition.duration.150ms class="whitespace-nowrap">Overview</span>
+       </a>
+     </li>
+ 
+     <!-- Analytics -->
+     <li>
+       <a
+         href="{% url 'analytics' %}"
+         class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150
+                hover:bg-gray-700 hover:text-white
+                {% if current == 'analytics' %}bg-gray-500 text-white{% endif %}"
+       >
+         <i class="fa-solid fa-chart-line text-lg"></i>
+         <span x-show="open" x-transition.duration.150ms class="whitespace-nowrap">Analytics</span>
+       </a>
+     </li>
+ 
+     <!-- Settings Dropdown -->
+     <li x-data="{ sub: false }" @click.outside="sub = false">
+       <button
+         type="button"
+         @click="sub = !sub"
+         class="flex items-center w-full gap-4 px-4 py-3 rounded-lg transition-all duration-150
+                hover:bg-gray-700 hover:text-white
+                {% if current == 'admin_settings' or current == 'load_data' %}bg-gray-500 text-white{% endif %}"
+       >
+         <i class="fa-solid fa-gear text-lg"></i>
+         <span x-show="open" x-transition.duration.150ms class="flex-1 text-left whitespace-nowrap">Settings</span>
+         <!-- Arrow only when expanded -->
+         <i
+           x-show="open"
+           :class="sub ? 'fa-solid fa-angle-up' : 'fa-solid fa-angle-down'"
+           class="text-sm transition-transform duration-150"
+         ></i>
+       </button>
+ 
+       <!-- Sub‑items -->
+       <ul
+         x-show="sub && open"
+         x-transition.origin.top.duration.150ms
+         class="pl-12 space-y-1 mt-1"
+       >
+         <li>
+           <a
+             href="{% url 'admin_settings' %}"
+             class="block px-4 py-2 rounded-lg transition-all duration-150
+                    hover:bg-gray-700 hover:text-white
+                    {% if current == 'admin_settings' %}bg-gray-500 text-white{% endif %}"
+           >Admin</a>
+         </li>
+         <li>
+           <a
+             href="{% url 'load_data' %}"
+             class="block px-4 py-2 rounded-lg transition-all duration-150
+                    hover:bg-gray-700 hover:text-white
+                    {% if current == 'load_data' %}bg-gray-500 text-white{% endif %}"
+           >Load Data</a>
+         </li>
+       </ul>
+     </li>
+   </ul>
+   {% endwith %}
+ </div>
+ 
