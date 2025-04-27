@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Stock Price Analytics{% endblock %}
+
+{% block content %}
+<div>
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-semibold text-gray-500">Overview</h1>
+        {% include "partials/_datepicker_native.html" %}
+    </div>
+{% endblock %}

@@ -4,7 +4,7 @@
 {% block title %}Stock Price Analytics{% endblock %}
 
 {% block content %}
-<div class="p-2 bg-gray-100 min-h-screen">
+<div>
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-semibold text-gray-500">Overview</h1>
         {% include "partials/_datepicker.html" %}
@@ -28,12 +28,11 @@
                         hx-trigger="change",
                         hx-target="#line-chart-container"
                         hx-swap="innerHTML"
-                        hx-include="#threshold-select, #period-select"
+                        hx-include="#threshold-select, #period-select, #selected-date"
                     >
-                        <option value="close_price" selected>Close Price</option>
-                        <option value="high_price">High Price</option>
-                        <option value="open_price">Open Price</option>
-                        <option value="volume">Volume</option>
+                        {% for key, value in  data_fields.items %}
+                            <option value={{ key }} {% if metric == key %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
                         <i class="fas fa-chevron-down"></i>
@@ -46,7 +45,13 @@
                 <!-- Crash Threshold -->
                 <div class="flex flex-col">
                     <label for="threshold-select" class="text-sm font-semibold text-gray-600 mb-1">Crash Threshold</label>
-                    <select id="threshold-select" name="threshold" class="bg-white border border-gray-300 text-gray-800 py-2 px-4 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-20">
+                    <select id="threshold-select" name="threshold" class="bg-white border border-gray-300 text-gray-800 py-2 px-4 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-20"
+                        hx-get={% url "update_chart" %}
+                        hx-trigger="change"
+                        hx-target="#line-chart-container"
+                        hx-swap="innerHTML"
+                        hx-include="#period-select, #metric-select, #selected-date"
+                    >
                         <option selected>5</option>
                         <option>6</option>
                         <option>7</option>
@@ -59,11 +64,16 @@
                 <div class="flex flex-col">
                     <label for="period-select" class="text-sm font-semibold text-gray-600 mb-1">Periodicity</label>
                     <div class="relative">
-                        <select id="period-select" name="period" class="appearance-none bg-white border border-gray-300 text-gray-800 py-2 px-4 pr-8 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option selected>Daily</option>
-                            <option>Monthly</option>
-                            <option>Quarterly</option>
-                            <option>Annually</option>
+                        <select id="period-select" name="period" class="appearance-none bg-white border border-gray-300 text-gray-800 py-2 px-4 pr-8 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        hx-get={% url "update_chart" %}
+                        hx-trigger="change",
+                        hx-target="#line-chart-container"
+                        hx-swap="innerHTML"
+                        hx-include="#threshold-select, #metric-select, #selected-date"
+                        >
+                            {% for key, value in  period_fields.items %}
+                                <option value={{ key }} {% if metric == key %}selected{% endif %}>{{ value }}</option>
+                            {% endfor %}
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
                             <i class="fas fa-chevron-down"></i>
@@ -71,33 +81,56 @@
                     </div>
                 </div>
 
-                <!-- 3‑dot Menu -->
-                <div class="relative pt-6">
-                    <button @click="showMenu = !showMenu" class="text-gray-600 hover:text-gray-900 focus:outline-none">
-                        <i class="fas fa-ellipsis-v text-2xl font-bold"></i>
-                    </button>
-                    <div 
-                        x-show="showMenu" 
-                        @click.away="showMenu = false"
-                        x-transition
-                        class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md z-50"
-                    >
-                        <ul class="text-sm text-gray-800">
-                            <li>
-                                <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Export Data as Excel</button>
-                            </li>
-                            <li>
-                                <button class="w-full text-left px-4 py-2 hover:bg-gray-100">Show Graph as Table</button>
-                            </li>
-                        </ul>
-                    </div>
+            <!-- 3‑dot Menu -->
+            <div class="relative pt-6" x-data="{ showMenu: false }">
+                <button @click="showMenu = !showMenu" class="text-gray-600 hover:text-gray-900 focus:outline-none">
+                    <i class="fas fa-ellipsis-v text-2xl font-bold"></i>
+                </button>
+                <div 
+                    x-show="showMenu" 
+                    @click.away="showMenu = false"
+                    x-transition
+                    class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md z-50"
+                >
+                    <ul class="text-sm text-gray-800">
+                        <li>
+                            <button
+                                @click="
+                                    showMenu = false;
+                                    const metric = document.getElementById('metric-select').value;
+                                    const threshold = document.getElementById('threshold-select').value;
+                                    const period = document.getElementById('period-select').value;
+                                    const selectedDate = document.getElementById('selected-date').value;
+                                    const url = '{% url 'export_data' %}?metric=' + metric + '&threshold=' + threshold + '&period=' + period + '&selected_date=' + selectedDate;
+                                    window.location.href = url;
+                                "
+                                class="w-full text-left block px-4 py-2 hover:bg-gray-100"
+                            >
+                                Export Data to Excel
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                hx-get="{% url 'render_table' %}"
+                                hx-target="#line-chart-container"
+                                hx-swap="innerHTML"
+                                hx-include="#metric-select, #threshold-select, #period-select, #selected-date"
+                                @click="showMenu = false"
+                                class="w-full text-left block px-4 py-2 hover:bg-gray-100"
+                            >
+                                Show Graph as Table
+                            </button>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+
             </div>
         </div>
 
-        <div id="line-chart-container" class="min-h-[500px] opacity-100 transition-opacity duration-500">
+        <div id="line-chart-container" class="h-[500px] overflow-hidden opacity-100 transition-opacity duration-500">
             {{ line_chart|safe }}
-        </div>            
+        </div> 
     </div>
 
 </div>

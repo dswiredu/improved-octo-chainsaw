@@ -4,3 +4,4 @@ django
 python-dotenv
 psycopg2
 kaleido
+xlsxwriter
