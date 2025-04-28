@@ -1,0 +1,151 @@
+{
+    "options": {
+        "single_result": true,
+        "order_by": [
+            "s-instrument-asset-subcategory"
+        ]
+    },
+    "control": {
+        "selected_entities": {
+            "accounts_or_positions": [
+                [
+                    "ef95992d-f4ab-4bf5-861f-236d255c6f76"
+                ]
+            ],
+            "account_display_names": [
+                "Enterprise Agostino Inc"
+            ]
+        }
+    },
+    "settings": {
+        "currency": "CAD",
+        "date": {
+            "date": "2022-09-30",
+            "value": "specificDate"
+        }
+    },
+    "groups": {
+        "selected": [
+            {
+                "grouping_criterion": "https://api-claret.d1g1t.com/api/v1/constants/groupings/security-id/",
+                "order": 0
+            }
+        ]
+    },
+    "metrics": {
+        "selected": [
+            {
+                "order": 0,
+                "slug": "q-spot-holding-values-settled-quantity",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "quantity"
+            },
+            {
+                "order": 1,
+                "slug": "q-spot-holding-values-settled-value",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "market_value_settled_dirty_rc"
+            },
+            {
+                "order": 2,
+                "slug": "q-spot-holding-values-settled-clean-value",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "market_value_settled_clean_rc"
+            },
+            {
+                "order": 3,
+                "slug": "q-spot-holding-values-settled-value-ioc",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "market_value_settled_dirty_lc"
+            },
+            {
+                "order": 4,
+                "slug": "q-spot-holding-values-settled-clean-value-ioc",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "market_value_settled_clean_lc"
+            },
+            {
+                "order": 5,
+                "slug": "q-spot-realized-vs-unrealized-settled-clean-book-value-ioc",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "total_cost_lc"
+            },
+            {
+                "order": 6,
+                "slug": "q-spot-realized-vs-unrealized-settled-book-value",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "total_cost_rc"
+            },
+            {
+                "order": 7,
+                "slug": "q-spot-relative-perf-contrib-weight-wrt-parent",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "pct_assets"
+            },
+            {
+                "order": 8,
+                "slug": "s-instrument-name",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Description"
+            },
+            {
+                "order": 9,
+                "slug": "s-product-type",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "security_type"
+            },
+            {
+                "order": 10,
+                "slug": "s-firm-provided-key",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "security_id"
+            },
+            {
+                "order": 11,
+                "slug": "s-instrument-asset-class-name",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "security_asset_class"
+            },
+            {
+                "order": 12,
+                "slug": "s-instrument-asset-subcategory",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "asset_subcategory"
+            },
+            {
+                "order": 13,
+                "slug": "s-instrument-currency-name",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "security_currency"
+            },
+            {
+                "order": 11,
+                "slug": "s-instrument-marketprice-source-c",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "price_lc"
+            },
+            {
+                "order": 12,
+                "slug":  "q-spot-holding-values-value-ioc",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "market_value_trade_clean_lc"
+            }
+        ]
+    }
+}

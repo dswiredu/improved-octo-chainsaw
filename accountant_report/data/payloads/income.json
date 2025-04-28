@@ -1,0 +1,215 @@
+{
+    "options": {
+        "single_result": true,
+        "date_range": {
+            "label": "Custom 2023-09-30",
+            "value": "custom",
+            "start_date": "2023-09-30",
+            "end_date": "2024-09-30"
+        }
+    },
+    "control": {
+        "selected_entities": {
+            "accounts_or_positions": [
+                [
+                    "ef95992d-f4ab-4bf5-861f-236d255c6f76"
+                ]
+            ],
+            "account_display_names": [
+                "Enterprise Agostino Inc"
+            ]
+        }
+    },
+    "settings": {
+        "currency": "CAD",
+        "date": {
+            "date": "2024-09-30",
+            "value": "specificDate"
+        }
+    },
+    "filter": {
+        "join_operator": "OR",
+        "items": [
+            {
+                "value": "Instrument Cashflow",
+                "filter_criterion": "https://api-claret.d1g1t.com/api/v1/constants/filtercriterion/transaction-property-d1g1t-transaction-type-is/"
+            },
+            {
+                "value": "Interest",
+                "filter_criterion": "https://api-claret.d1g1t.com/api/v1/constants/filtercriterion/transaction-property-d1g1t-transaction-type-is/"
+            },
+            {
+                "value": "Internal Transfer Security In",
+                "filter_criterion": "https://api-claret.d1g1t.com/api/v1/constants/filtercriterion/transaction-property-d1g1t-transaction-type-is/"
+            },
+            {
+                "value": "Buy",
+                "filter_criterion": "https://api-claret.d1g1t.com/api/v1/constants/filtercriterion/transaction-property-d1g1t-transaction-type-is/"
+            },
+            {
+                "value": "Sell",
+                "filter_criterion": "https://api-claret.d1g1t.com/api/v1/constants/filtercriterion/transaction-property-d1g1t-transaction-type-is/"
+            }
+        ]
+    },
+    "groups": {
+        "selected": []
+    },
+    "metrics": {
+        "selected": [
+            {
+                "order": 0,
+                "slug": "r-currency-name",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Transaction Currency"
+            },
+            {
+                "order": 1,
+                "slug": "r-description",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Transaction Type"
+            },
+            {
+                "order": 2,
+                "slug": "r-display-net-transaction-amount",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "d1g1t Transaction Amount (Net)"
+            },
+            {
+                "order": 3,
+                "slug": "r-display-net-transaction-amount-trx-ccy",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "d1g1t Transaction Amount (Net - Trx Currency)"
+            },
+            {
+                "order": 4,
+                "slug": "r-instrument-country",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Country"
+            },
+            {
+                "order": 5,
+                "slug": "r-instrument-currency-name",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Security Currency"
+            },
+            {
+                "order": 6,
+                "slug": "r-instrument-name",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Security Name"
+            },
+            {
+                "order": 7,
+                "slug": "r-tax-withheld",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Tax Withheld"
+            },
+            {
+                "order": 8,
+                "slug": "r-trade-date",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Trade date"
+            },
+            {
+                "order": 9,
+                "slug": "r-settle-date",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Settle date"
+            },
+            {
+                "order": 10,
+                "slug": "r-transaction-amount",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "d1g1t Transaction Amount (Gross)"
+            },
+            {
+                "order": 11,
+                "slug": "r-transaction-amount-trx-ccy",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "d1g1t Transaction Amount (Gross - Trx Currency)"
+            },
+            {
+                "slug": "r-transaction-id",
+                "column_title": "Transaction ID",
+                "field_name": "",
+                "order": 12
+            },
+            {
+                "order": 13,
+                "slug": "r-is-book-of-record",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Is Book Of Record"
+            },
+            {
+                "order": 14,
+                "slug": "r-source-type-is-cancelled",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Is Cancelled"
+            },
+            {
+                "order": 15,
+                "slug": "r-type-name",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "d1g1t Transaction Type"
+            },
+            {
+                "order": 16,
+                "slug": "r-instrument-asset-subcategory",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Asset Subcategory"
+            },
+            {
+                "order": 17,
+                "slug": "r-instrument-firm-provided-key",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Security ID"
+            },
+            {
+                "order": 18,
+                "slug": "r-source-type",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Transaction Code"
+            },
+            {
+                "order": 19,
+                "slug": "r-instrument-user-defined-3",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Security User Defined 3"
+            },
+            {
+                "order": 20,
+                "slug": "r-transaction-realized-gain-loss",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Realized Gain/Loss"
+            },
+            {
+                "order": 21,
+                "slug": "r-transaction-realized-gain-loss-trx-ccy",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Realized Gains (TC)"
+            }
+        ]
+    }
+}

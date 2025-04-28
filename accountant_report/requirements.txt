@@ -1,0 +1,10 @@
+awswrangler = "^3.9.1"
+boto3
+pandas
+openpyxl
+s3fs
+fsspec
+django-rest-framework-client = "^0.7.0"
+xlsxwriter
+black
+python-i18n

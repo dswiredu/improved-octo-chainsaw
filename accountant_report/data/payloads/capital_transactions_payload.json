@@ -1,0 +1,220 @@
+{
+    "options": {
+        "single_result": true,
+        "date_range": {
+            "value": "since_inception",
+            "label": "Since Inception"
+        },
+        "order_by": [
+            "-r-settle-date"
+        ]
+    },
+    "control": {
+        "selected_entities": {
+            "accounts_or_positions": [
+                [
+                    "ef95992d-f4ab-4bf5-861f-236d255c6f76"
+                ]
+            ],
+            "account_display_names": [
+                "Enterprise Agostino Inc"
+            ]
+        }
+    },
+    "settings": {
+        "currency": "CAD",
+        "date": {
+            "date": "2025-02-04",
+            "value": "specificDate"
+        }
+    },
+    "filter": {
+        "join_operator": "AND",
+        "items": [
+            {
+                "value": "by,sl",
+                "filter_criterion": "https://api-claret.d1g1t.com/api/v1/constants/filtercriterion/transaction-property-transaction-code-one-of/"
+            },
+            {
+                "value": "Buy,Sell",
+                "filter_criterion": "https://api-claret.d1g1t.com/api/v1/constants/filtercriterion/transaction-property-d1g1t-transaction-type-one-of/"
+            }
+        ]
+    },
+    "groups": {
+        "selected": []
+    },
+    "metrics": {
+        "selected": [
+            {
+                "order": 0,
+                "slug": "r-currency-name",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "transaction_currency"
+            },
+            {
+                "order": 1,
+                "slug": "r-instrument-asset-class-name",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Security Asset Class"
+            },
+            {
+                "order": 2,
+                "slug": "r-instrument-name",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Description"
+            },
+            {
+                "order": 3,
+                "slug": "r-instrument-product-type",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Security Type"
+            },
+            {
+                "order": 4,
+                "slug": "r-settle-date",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Settle Date"
+            },
+            {
+                "order": 5,
+                "slug": "r-source-type",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Transaction Code"
+            },
+            {
+                "order": 6,
+                "slug": "r-transaction-book-value-increment",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "effect_on_bv_rc"
+            },
+            {
+                "order": 7,
+                "slug": "r-transaction-book-value-increment-in-own-currency",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "effect_on_bv_ioc"
+            },
+            {
+                "order": 7,
+                "slug": "r-transaction-amount-trx-ccy",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "d1g1t Transaction Amount (Gross - Trx Currency)"
+            },
+            {
+                "order": 8,
+                "slug": "r-transaction-book-value",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "book_value_rc"
+            },
+            {
+                "order": 9,
+                "slug": "r-transaction-quantity",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Quantity"
+            },
+            {
+                "order": 10,
+                "slug": "r-transaction-realized-gain-loss",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "realized_gl_rc"
+            },
+            {
+                "order": 11,
+                "slug": "r-type-name",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "d1g1t Transaction Type"
+            },
+            {
+                "order": 12,
+                "slug": "r-transaction-realized-gain-loss-in-own-currency",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "realized_gl_ioc"
+            },
+            {
+                "order": 13,
+                "slug": "r-transaction-book-value-in-own-currency",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "book_value_ioc"
+            },
+            {
+                "order": 14,
+                "slug": "r-instrument-user-defined-3",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "security-udf3"
+            },
+            {
+                "order": 15,
+                "slug": "r-transaction-report-currency-quantity-balance",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "quantity_balance"
+            }
+        ]
+    },
+    "pagination": {
+        "parent_path": "root",
+        "offset": 0,
+        "size": 100,
+        "order_by": [
+            "-r-settle-date"
+        ],
+        "filtering": {
+            "is_cancelled_transaction": {
+                "format": "boolean",
+                "join_operator": "AND",
+                "expressions": [
+                    {
+                        "value": false,
+                        "operator": "is"
+                    }
+                ]
+            },
+            "line_in_source": {
+                "format": "boolean",
+                "join_operator": "AND",
+                "expressions": [
+                    {
+                        "value": true,
+                        "operator": "is"
+                    }
+                ]
+            },
+            "is_pending_transaction": {
+                "format": "boolean",
+                "join_operator": "AND",
+                "expressions": [
+                    {
+                        "value": false,
+                        "operator": "is"
+                    }
+                ]
+            },
+            "is_book_of_record": {
+                "format": "boolean",
+                "join_operator": "AND",
+                "expressions": [
+                    {
+                        "value": true,
+                        "operator": "is"
+                    }
+                ]
+            }
+        }
+    }
+}

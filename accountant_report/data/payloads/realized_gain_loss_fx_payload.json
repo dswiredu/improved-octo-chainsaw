@@ -1,0 +1,132 @@
+{
+    "options": {
+        "single_result": true,
+        "date_range": {
+            "value": "year",
+            "label": "1 Year"
+        },
+        "order_by": [
+            "r-settle-date"
+        ]
+    },
+    "control": {
+        "selected_entities": {
+            "accounts_or_positions": [
+                [
+                    "ef95992d-f4ab-4bf5-861f-236d255c6f76"
+                ]
+            ],
+            "account_display_names": [
+                "Enterprise Agostino Inc"
+            ]
+        }
+    },
+    "settings": {
+        "currency": "CAD",
+        "date": {
+            "date": "2025-01-03",
+            "value": "specificDate"
+        }
+    },
+    "filter": {
+        "join_operator": "OR",
+        "items": [
+            {
+                "value": "Sell",
+                "filter_criterion": "https://api-claret.d1g1t.com/api/v1/constants/filtercriterion/transaction-property-d1g1t-transaction-type-is/"
+            }
+        ]
+    },
+    "groups": {
+        "selected": []
+    },
+    "metrics": {
+        "selected": [
+            {
+                "order": 0,
+                "slug": "r-settle-date",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "Settle Date"
+            },
+            {
+                "order": 1,
+                "slug": "r-transaction-book-value",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "book_value_rc"
+            },
+            {
+                "order": 2,
+                "slug": "r-transaction-amount",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "trx_amount_rc"
+            },
+            {
+                "order": 3,
+                "slug": "r-transaction-cash-position-realized-gain-loss",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "cash_realized_gl"
+            },
+            {
+                "order": 0,
+                "slug": "r-currency-name",
+                "contribution_dimension": null,
+                "contribution_dimension_2": null,
+                "column_title": "transaction_currency"
+            }
+        ]
+    },
+    "pagination": {
+        "parent_path": "root",
+        "offset": 0,
+        "size": 100,
+        "order_by": [
+            "r-trade-date"
+        ],
+        "filtering": {
+            "line_in_source": {
+                "format": "boolean",
+                "join_operator": "AND",
+                "expressions": [
+                    {
+                        "value": true,
+                        "operator": "is"
+                    }
+                ]
+            },
+            "is_cancelled_transaction": {
+                "format": "boolean",
+                "join_operator": "AND",
+                "expressions": [
+                    {
+                        "value": false,
+                        "operator": "is"
+                    }
+                ]
+            },
+            "is_pending_transaction": {
+                "format": "boolean",
+                "join_operator": "AND",
+                "expressions": [
+                    {
+                        "value": false,
+                        "operator": "is"
+                    }
+                ]
+            },
+            "is_book_of_record": {
+                "format": "boolean",
+                "join_operator": "AND",
+                "expressions": [
+                    {
+                        "value": true,
+                        "operator": "is"
+                    }
+                ]
+            }
+        }
+    }
+}

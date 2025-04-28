@@ -1,0 +1,15 @@
+{
+    "fr": {
+        "DEPOSIT, WITHDRAWALS, AND FEES": "DÉPÔTS, RETRAITS ET FRAIS",
+        "Reporting Currency: Canadian Dollars": "Devise de rapport : dollars canadiens",
+        "Trade": "Transaction",
+        "Date": "Date",
+        "Security": "Titre",
+        "Amount": "Montant",
+        "local": "Devise locale",
+        "FX Rate": "Taux de change",
+        "Rep. Cur.": "Dev. de rapport",
+        "Reconciliation": "Réconciliation",
+        "Evaluation - Beginning": "Évaluation - Début"
+    }
+}
