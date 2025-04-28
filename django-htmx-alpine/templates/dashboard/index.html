@@ -81,49 +81,59 @@
                     </div>
                 </div>
 
-            <!-- 3‑dot Menu -->
-            <div class="relative pt-6" x-data="{ showMenu: false }">
-                <button @click="showMenu = !showMenu" class="text-gray-600 hover:text-gray-900 focus:outline-none">
-                    <i class="fas fa-ellipsis-v text-2xl font-bold"></i>
-                </button>
-                <div 
-                    x-show="showMenu" 
-                    @click.away="showMenu = false"
-                    x-transition
-                    class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md z-50"
-                >
-                    <ul class="text-sm text-gray-800">
-                        <li>
-                            <button
-                                @click="
-                                    showMenu = false;
-                                    const metric = document.getElementById('metric-select').value;
-                                    const threshold = document.getElementById('threshold-select').value;
-                                    const period = document.getElementById('period-select').value;
-                                    const selectedDate = document.getElementById('selected-date').value;
-                                    const url = '{% url 'export_data' %}?metric=' + metric + '&threshold=' + threshold + '&period=' + period + '&selected_date=' + selectedDate;
-                                    window.location.href = url;
-                                "
-                                class="w-full text-left block px-4 py-2 hover:bg-gray-100"
-                            >
-                                Export Data to Excel
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                hx-get="{% url 'render_table' %}"
-                                hx-target="#line-chart-container"
-                                hx-swap="innerHTML"
-                                hx-include="#metric-select, #threshold-select, #period-select, #selected-date"
-                                @click="showMenu = false"
-                                class="w-full text-left block px-4 py-2 hover:bg-gray-100"
-                            >
-                                Show Graph as Table
-                            </button>
-                        </li>
-                    </ul>
+                <!-- 3‑dot Menu -->
+                <div class="relative pt-6" x-data="{ showMenu: false, currentView: 'chart' }">
+                    <button @click="showMenu = !showMenu" class="text-gray-600 hover:text-gray-900 focus:outline-none">
+                        <i class="fas fa-ellipsis-v text-2xl font-bold"></i>
+                    </button>
+
+                    <div 
+                        x-show="showMenu" 
+                        @click.away="showMenu = false"
+                        x-transition
+                        class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md z-50"
+                    >
+                        <ul class="text-sm text-gray-800">
+                            <li>
+                                <!-- Export Data Button -->
+                                <button
+                                    @click="
+                                        showMenu = false;
+                                        const metric = document.getElementById('metric-select').value;
+                                        const threshold = document.getElementById('threshold-select').value;
+                                        const period = document.getElementById('period-select').value;
+                                        const selectedDate = document.getElementById('selected-date').value;
+                                        const url = '{% url 'export_data' %}?metric=' + metric + '&threshold=' + threshold + '&period=' + period + '&selected_date=' + selectedDate;
+                                        window.location.href = url;
+                                    "
+                                    class="w-full text-left block px-4 py-2 hover:bg-gray-100"
+                                >
+                                    Export Data to Excel
+                                </button>
+                            </li>
+
+                            <li>
+                                <!-- Toggle Graph/Table Button -->
+                                <button
+                                    :hx-get="currentView === 'chart' ? '{% url 'render_table' %}' : '{% url 'update_chart' %}'"
+                                    hx-target="#line-chart-container"
+                                    hx-swap="innerHTML"
+                                    hx-include="#metric-select, #threshold-select, #period-select, #selected-date"
+                                    @click="
+                                        showMenu = false;
+                                        currentView = currentView === 'chart' ? 'table' : 'chart';
+                                        $nextTick(() => {
+                                            htmx.process($el);
+                                        });
+                                    "
+                                    class="w-full text-left block px-4 py-2 hover:bg-gray-100"
+                                >
+                                    <span x-text="currentView === 'chart' ? 'Show Graph as Table' : 'Show Table as Graph'"></span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
 
             </div>
         </div>

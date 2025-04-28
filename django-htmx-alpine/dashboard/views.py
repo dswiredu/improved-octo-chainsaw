@@ -186,7 +186,10 @@ def update_line_chart(request):
     df = get_chart_input_data(selected_date, metric, crash, period)
 
     chart_html = generate_chart(df, column=metric)
-    return HttpResponse(chart_html)
+    context = {
+        "line_chart": chart_html
+    }
+    return render(request, 'partials/_chart_view.html', context=context)
 
 def render_table(request):
     metric = request.GET.get("metric")
