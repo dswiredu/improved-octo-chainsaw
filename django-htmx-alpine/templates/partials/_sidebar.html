@@ -13,8 +13,8 @@
     <li>
       <a
         href="{% url 'dashboard' %}"
-        class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-800 hover:text-white text-gray-400
-              {% if current == 'dashboard' %}bg-gray-800 text-white font-medium{% endif %}"
+        class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-700 hover:text-white text-gray-400
+              {% if current == 'dashboard' %}bg-gray-700 text-white font-medium{% endif %}"
       >
         <i class="fa-solid fa-house text-lg"></i>
         <span x-show="open" x-cloak x-transition.opacity.duration.150ms class="whitespace-nowrap">Overview</span>
@@ -25,8 +25,8 @@
     <li>
       <a
         href="{% url 'analytics' %}"
-        class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-800 hover:text-white text-gray-400
-              {% if current == 'analytics' %}bg-gray-800 text-white font-medium{% endif %}"
+        class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-700 hover:text-white text-gray-400
+              {% if current == 'analytics' %}bg-gray-700 text-white font-medium{% endif %}"
       >
         <i class="fa-solid fa-chart-line text-lg"></i>
         <span x-show="open" x-cloak x-transition.opacity.duration.150ms class="whitespace-nowrap">Analytics</span>
@@ -38,8 +38,8 @@
       <button
         type="button"
         @click="sub = !sub"
-        class="flex items-center w-full gap-4 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-800 hover:text-white text-gray-400
-              {% if current == 'admin_settings' or current == 'load_data' %}bg-gray-800 text-white font-medium{% endif %}"
+        class="flex items-center w-full gap-4 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-700 hover:text-white text-gray-400
+              {% if current == 'admin_settings' or current == 'load_data' %}bg-gray-700 text-white font-medium{% endif %}"
       >
         <i class="fa-solid fa-gear text-lg"></i>
         <span x-show="open" x-cloak x-transition.opacity.duration.150ms class="flex-1 text-left whitespace-nowrap">Settings</span>
@@ -61,8 +61,8 @@
         <li>
           <a
             href="{% url 'admin_settings' %}"
-            class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-800 hover:text-white text-gray-400
-                  {% if current == 'admin_settings' %}bg-gray-800 text-white font-medium{% endif %}"
+            class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-700 hover:text-white text-gray-400
+                  {% if current == 'admin_settings' %}bg-gray-700 text-white font-medium{% endif %}"
           >
             <i class="fa-solid fa-user-shield text-[0.85rem]"></i>
             <span>Admin</span>
@@ -71,8 +71,8 @@
         <li>
           <a
             href="{% url 'load_data' %}"
-            class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-800 hover:text-white text-gray-400
-                  {% if current == 'load_data' %}bg-gray-800 text-white font-medium{% endif %}"
+            class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-700 hover:text-white text-gray-400
+                  {% if current == 'load_data' %}bg-gray-700 text-white font-medium{% endif %}"
           >
             <i class="fa-solid fa-cloud-arrow-up text-[0.85rem]"></i>
             <span>Load Data</span>
