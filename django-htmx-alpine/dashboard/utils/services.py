@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 from ..models import HistoricalPrice
 
-def get_historical_prices(dte: str, days: int = None) -> pd.DataFrame:
+def get_historical_prices(dte: str, days: int = None, start: int=0, end: int=None) -> pd.DataFrame:
     """
     Retrieves all prices less than a given date.
     """
@@ -15,6 +15,9 @@ def get_historical_prices(dte: str, days: int = None) -> pd.DataFrame:
         qs = HistoricalPrice.objects.filter(date__range=(start_date, dte_obj)).order_by("date")
     else:
         qs = HistoricalPrice.objects.filter(date__lte=dte).order_by("date")
+    
+    if end:
+        qs = qs[start:end]
 
     if not qs.exists():
         return pd.DataFrame()

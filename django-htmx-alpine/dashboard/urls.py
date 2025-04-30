@@ -10,5 +10,5 @@ urlpatterns = [
     path('update_chart', views.update_line_chart, name="update_chart"),
     path('export_data', views.export_data, name="export_data"),
     path('render_table', views.render_table, name="render_table"),
-
+    path('nav_test', views.nav_test, name="nav_test"),
 ]

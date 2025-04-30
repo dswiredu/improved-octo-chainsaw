@@ -14,6 +14,7 @@ import plotly.io as pio
 import base64
 import io
 from django.http import HttpResponse
+from django.conf import settings
 
 from .utils.services import get_historical_prices
 from .utils.analytics import compute_percentage_changes
@@ -120,6 +121,8 @@ def get_chart_input_data(
     crash_threshold: str = "5",
     period: str = "D",
     index: bool = False,
+    start: int=0,
+    end: int=None
 ):
     df = get_historical_prices(selected_date)
 
@@ -196,20 +199,48 @@ def render_table(request):
     crash = request.GET.get("threshold")
     period = request.GET.get("period")
     selected_date = request.GET.get("selected_date")
+    page = int(request.GET.get("page", 1))
+
+    total_rows = HistoricalPrice.objects.filter(
+        date__lte=selected_date).order_by("date").count()
 
     print(metric, crash, period, selected_date, sep=" | ")
 
-    df = get_chart_input_data(selected_date, metric, crash, period)
-    print(df.head)
+    page_size = settings.PAGINATION_SIZE
+    start = (page-1)*page_size
+    end = start + page_size
+
+    paginated_df = get_chart_input_data(
+        selected_date,
+        metric,
+        crash,
+        period,
+        index=False,
+        start=start,
+        end=end
+    )
+    has_next = (page * page_size) < total_rows
+
     context = {
-        "df" : df.to_dict("records")
+        "df" : paginated_df.to_dict("records"),
+        "has_next": has_next,
+        "next_page": page + 1
     }
+
+    if request.headers.get("HX-Request"):
+        # Just return the rows for infinite scroll
+        return render(request, "partials/_table_rows.html", context)
+    
+    # First page load: render full table with tbody and loader
     return render(request, 'partials/_table_view.html', context)
 
 
 def date_test(request):
     context = {"selected_date": "2025-04-26"} 
     return render(request, "dashboard/date_test.html", context)
+
+def nav_test(request):
+    return render(request, "dashboard/nav_tests.html")
 
 def export_data(request):
     metric = request.GET.get("metric")

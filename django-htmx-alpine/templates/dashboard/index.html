@@ -7,7 +7,6 @@
 <div>
     <div class="flex justify-between items-center py-2">
         <div class="flex items-center space-x-2 text-gray-600 text-2xl font-bold">
-            <i class="fa-solid fa-house"></i>
             <div>Overview</div>
         </div>
         {% include "partials/_datepicker.html" %}
@@ -18,7 +17,7 @@
     </div>
 
     <div class="bg-white p-4 shadow-md rounded-lg transform transition duration-500 ease-out opacity-0 translate-y-4 mb-6"
-        x-init="setTimeout(() => $el.classList.remove('opacity-0', 'translate-y-4'), 500)"
+        x-init="setTimeout(() => $el.classList.remove('opacity-0', 'translate-y-4'), 300)"
     >   
         <!-- Graph Controls -->
         <div class="flex justify-between items-start mb-4 px-2" x-data="{ showMenu: false }">
@@ -86,7 +85,7 @@
 
                 <!-- 3‑dot Menu -->
                 <div class="relative pt-6" x-data="{ showMenu: false, currentView: 'chart' }">
-                    <button @click="showMenu = !showMenu" class="text-gray-600 hover:text-gray-900 focus:outline-none">
+                    <button @click="showMenu = !showMenu" class="btn btn-ghost btn-circle text-gray-600 hover:text-gray-900 focus:outline-none">
                         <i class="fas fa-ellipsis-v text-2xl font-bold"></i>
                     </button>
 
