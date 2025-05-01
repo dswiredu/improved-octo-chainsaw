@@ -227,8 +227,8 @@ def render_table(request):
         "next_page": page + 1
     }
 
-    if request.headers.get("HX-Request"):
-        # Just return the rows for infinite scroll
+    if request.headers.get("HX-Request") and page > 1:
+        print("Just return the rows for infinite scroll")
         return render(request, "partials/_table_rows.html", context)
     
     # First page load: render full table with tbody and loader

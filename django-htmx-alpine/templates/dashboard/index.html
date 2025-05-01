@@ -11,7 +11,6 @@
         </div>
         {% include "partials/_datepicker.html" %}
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
         {% include "dashboard/partials/summary_cards.html" %}
     </div>
@@ -117,7 +116,7 @@
                             <li>
                                 <!-- Toggle Graph/Table Button -->
                                 <button
-                                    :hx-get="currentView === 'chart' ? '{% url 'render_table' %}' : '{% url 'update_chart' %}'"
+                                    :hx-get="currentView === 'chart' ? '{% url 'render_table' %}?page=1' : '{% url 'update_chart' %}'"
                                     hx-target="#line-chart-container"
                                     hx-swap="innerHTML"
                                     hx-include="#metric-select, #threshold-select, #period-select, #selected-date"

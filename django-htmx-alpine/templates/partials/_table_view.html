@@ -1,8 +1,4 @@
-<!-- _table_view.html -->
-<div
-  class="overflow-x-auto overflow-y-auto h-full transform transition duration-500 ease-out opacity-0 translate-y-4"
-  x-init="setTimeout(() => $el.classList.remove('opacity-0', 'translate-y-4'), 50)"
->
+<div class="overflow-x-auto bg-white shadow-md rounded-lg p-4">
   <table class="table-auto w-full text-sm text-gray-700">
     <thead class="text-xs uppercase bg-gray-100 text-gray-600">
       <tr>
@@ -13,16 +9,20 @@
         <th class="px-4 py-3">Low</th>
       </tr>
     </thead>
-    <tbody>
-      {% for row in df %}
-      <tr class="border-b hover:bg-gray-50">
-        <td class="px-4 py-2">{{ row.date }}</td>
-        <td class="px-4 py-2">{{ row.close_price }}</td>
-        <td class="px-4 py-2">{{ row.volume }}</td>
-        <td class="px-4 py-2">{{ row.high_price }}</td>
-        <td class="px-4 py-2">{{ row.low_price }}</td>
-      </tr>
-      {% endfor %}
+    <tbody id="table-body">
+      {% include "partials/_table_rows.html" %}
     </tbody>
   </table>
+
+  {% if has_next %}
+    <div
+      hx-get="{% url 'render_table' %}?metric={{ metric }}&threshold={{ threshold }}&period={{ period }}&selected_date={{ selected_date }}&page={{ next_page }}"
+      hx-trigger="intersect"
+      hx-target="#table-body"
+      hx-swap="beforeend"
+      class="text-center py-4 text-gray-400"
+    >
+      Loading more rows...
+    </div>
+  {% endif %}
 </div>
