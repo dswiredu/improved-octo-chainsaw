@@ -3,7 +3,7 @@ from .models import HistoricalPrice
 
 # Register your models here.
 class HistoricalPriceAdmin(admin.ModelAdmin):
-    list_display = ('symbol', 'name', 'exchange')
+    list_display = ('date', 'open_price', 'close_price', 'high_price', 'low_price', 'volume')
 
 
-admin.register(HistoricalPrice, HistoricalPriceAdmin)
+admin.site.register(HistoricalPrice, HistoricalPriceAdmin)
