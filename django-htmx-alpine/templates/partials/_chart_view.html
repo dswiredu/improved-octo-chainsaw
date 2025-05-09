@@ -3,5 +3,6 @@
   class="h-[500px] overflow-hidden transform transition duration-500 ease-out opacity-0 translate-y-4"
   x-init="setTimeout(() => $el.classList.remove('opacity-0', 'translate-y-4'), 50)"
 >
-  {{ line_chart|safe }}
+  {{ chart_div|safe }}
+  {{ chart_script|safe }}
 </div>

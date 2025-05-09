@@ -140,7 +140,8 @@
         </div>
 
         <div id="line-chart-container" class="h-[500px] overflow-hidden opacity-100 transition-opacity duration-500">
-            {{ line_chart|safe }}
+            {{ chart_div|safe }}
+            {{ chart_script|safe }}
         </div> 
     </div>
 

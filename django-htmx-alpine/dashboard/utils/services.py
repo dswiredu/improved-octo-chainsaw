@@ -32,4 +32,7 @@ def get_historical_prices(dte: str, days: int = None, start: int=0, end: int=Non
             "volume"
         )
     )
+
+    decimal_cols = ["open_price", "close_price", "high_price", "low_price"]
+    df[decimal_cols] = df[decimal_cols].astype(float)
     return df.sort_values(by=["date"])
