@@ -6,7 +6,7 @@ from bokeh.models import ColumnDataSource
 from bokeh.models import ColumnDataSource, HoverTool
 
 import pandas as pd
-from ..constants import SPARKLINE_DAYS
+from ..constants.overview import SPARKLINE_DAYS
 
 
 def generate_summary_sparklines(df: pd.DataFrame) -> Dict[str, str]:
@@ -42,7 +42,6 @@ def generate_summary_sparklines(df: pd.DataFrame) -> Dict[str, str]:
             p.border_fill_color = None
 
             script, div = components(p)
-            print(col == col.lower())
             res[f"{col.lower()}_sparkline_script"] = script
             res[f"{col.lower()}_sparkline_div"] = div
 

@@ -21,15 +21,15 @@
       </a>
     </li>
 
-    <!-- Analytics -->
+    <!-- Client-Portfolios -->
     <li>
       <a
-        href="{% url 'analytics' %}"
+        href="{% url 'client_portfolios' %}"
         class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-700 hover:text-white text-gray-400
-              {% if current == 'analytics' %}bg-gray-700 text-white font-medium{% endif %}"
+              {% if current == 'client_portfolios' %}bg-gray-700 text-white font-medium{% endif %}"
       >
         <i class="fa-solid fa-chart-line text-lg"></i>
-        <span x-show="open" x-cloak x-transition.opacity.duration.150ms class="whitespace-nowrap">Analytics</span>
+        <span x-show="open" x-cloak x-transition.opacity.duration.150ms class="whitespace-nowrap">Client Portfolios</span>
       </a>
     </li>
 

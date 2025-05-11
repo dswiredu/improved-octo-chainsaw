@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Stock Price Analytics{% endblock %}
+
+{% block content %}
+    <div>
+        <div class="flex justify-between items-center py-2">
+            <div class="flex items-center space-x-2 text-gray-600 text-2xl font-bold">
+                <div>Overview</div>
+            </div>
+            {% include "partials/_datepicker.html" with action_url=request.path %}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+            {% include "dashboard/partials/summary_cards.html" %}
+        </div>
+
+        <div class="bg-white p-4 shadow-md rounded-lg transform transition duration-500 ease-out opacity-0 translate-y-4 mb-6"
+             x-init="setTimeout(() => $el.classList.remove('opacity-0', 'translate-y-4'), 300)"
+        >
+        <!-- Graph Controls -->
+            <div class="flex justify-between items-start mb-4 px-2" x-data="{ showMenu: false }">
+            <!-- Left: Metric Selector -->
+                <div class="flex flex-col">
+                    <label for="metric-select" class="text-sm font-semibold text-gray-600 mb-1">Metric</label>
+                    <div class="relative">
+                        <select id="metric-select" name="metric" class="appearance-none bg-white border border-gray-300 text-gray-800 py-2 px-4 pr-8 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                hx-get={% url "update_chart" %}
+                                hx-trigger="change",
+                                hx-target="#line-chart-container"
+                                hx-swap="innerHTML"
+                                hx-include="#threshold-select, #period-select, #selected-date"
+                        >
+                            {% for key, value in  data_fields.items %}
+                                <option value={{ key }} {% if metric == key %}selected{% endif %}>{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- Right: Threshold, Periodicity & Menu -->
+                <div class="flex items-end space-x-6">
+                <!-- Crash Threshold -->
+                    <div class="flex flex-col">
+                        <label for="threshold-select" class="text-sm font-semibold text-gray-600 mb-1">Crash Threshold</label>
+                        <select id="threshold-select" name="threshold" class="bg-white border border-gray-300 text-gray-800 py-2 px-4 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-20"
+                                hx-get={% url "update_chart" %}
+                                hx-trigger="change"
+                                hx-target="#line-chart-container"
+                                hx-swap="innerHTML"
+                                hx-include="#period-select, #metric-select, #selected-date"
+                        >
+                            <option selected>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                            <option>10</option>
+                        </select>
+                    </div>
+                <!-- Periodicity -->
+                    <div class="flex flex-col">
+                        <label for="period-select" class="text-sm font-semibold text-gray-600 mb-1">Periodicity</label>
+                        <div class="relative">
+                            <select id="period-select" name="period" class="appearance-none bg-white border border-gray-300 text-gray-800 py-2 px-4 pr-8 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    hx-get={% url "update_chart" %}
+                                    hx-trigger="change",
+                                    hx-target="#line-chart-container"
+                                    hx-swap="innerHTML"
+                                    hx-include="#threshold-select, #metric-select, #selected-date"
+                            >
+                                {% for key, value in  period_fields.items %}
+                                    <option value={{ key }} {% if metric == key %}selected{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- 3‑dot Menu -->
+                    <div class="relative pt-6" x-data="{ showMenu: false, currentView: 'chart' }">
+                        <button @click="showMenu = !showMenu" class="btn btn-ghost btn-circle text-gray-600 hover:text-gray-900 focus:outline-none">
+                            <i class="fas fa-ellipsis-v text-2xl font-bold"></i>
+                        </button>
+
+                        <div
+                            x-show="showMenu"
+                            @click.away="showMenu = false"
+                            x-transition
+                            class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-md z-50"
+                        >
+                            <ul class="text-sm text-gray-800">
+                                <li>
+                                <!-- Export Data Button -->
+                                    <button
+                                        @click="
+                                                showMenu = false;
+                                                const metric = document.getElementById('metric-select').value;
+                                                const threshold = document.getElementById('threshold-select').value;
+                                                const period = document.getElementById('period-select').value;
+                                                const selectedDate = document.getElementById('selected-date').value;
+                                                const url = '{% url 'export_data' %}?metric=' + metric + '&threshold=' + threshold + '&period=' + period + '&selected_date=' + selectedDate;
+                                                window.location.href = url;
+                                               "
+                                        class="w-full text-left block px-4 py-2 hover:bg-gray-100"
+                                    >
+                                        Export Data to Excel
+                                    </button>
+                                </li>
+
+                                <li>
+                                <!-- Toggle Graph/Table Button -->
+                                    <button
+                                        :hx-get="currentView === 'chart' ? '{% url 'render_table' %}?page=1' : '{% url 'update_chart' %}'"
+                                        hx-target="#line-chart-container"
+                                        hx-swap="innerHTML"
+                                        hx-include="#metric-select, #threshold-select, #period-select, #selected-date"
+                                        @click="
+                                                showMenu = false;
+                                                currentView = currentView === 'chart' ? 'table' : 'chart';
+                                                $nextTick(() => {
+                                                htmx.process($el);
+                                                });
+                                               "
+                                        class="w-full text-left block px-4 py-2 hover:bg-gray-100"
+                                    >
+                                        <span x-text="currentView === 'chart' ? 'Show Graph as Table' : 'Show Table as Graph'"></span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="line-chart-container" class="h-[500px] overflow-hidden opacity-100 transition-opacity duration-500">
+                {{ chart_div|safe }}
+                {{ chart_script|safe }}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

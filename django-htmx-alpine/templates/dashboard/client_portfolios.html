@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Client Portfolios{% endblock %}
+
+{% block content %}
+    <div>
+        <div class="flex justify-between items-center py-2">
+            <div class="flex items-center space-x-2 text-gray-600 text-2xl font-bold">
+                <div>Client Portfolios</div>
+            </div>
+            {% include "partials/_datepicker.html" with action_url=request.path initial_date=display_date %}
+        </div>
+        <div>
+            {% include "partials/_tabulator.html" with table_id="portfolio-table" data=data_json columns=column_json groupby="['client_name', 'account_name']" %}
+        </div>
+    </div>
+{% endblock %}

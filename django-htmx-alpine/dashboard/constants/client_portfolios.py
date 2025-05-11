@@ -1,0 +1,18 @@
+TABULATOR_COLUMNS = [
+    { "title": "Client", "field": "client_name", "headerFilter": True },
+    { "title": "Client ID", "field": "client_id" },
+    { "title": "Account", "field": "account_name", "headerFilter": True },
+    { "title": "Account ID", "field": "account_id" },
+    { "title": "Instrument", "field": "instrument_name", "headerFilter": True },
+    { "title": "Symbol", "field": "symbol" },
+    { "title": "Units", "field": "units" },
+    { "title": "Market Price", "field": "market_price", "formatter": "money" },
+    { "title": "Market Value", "field": "market_value", "formatter": "money" },
+    { "title": "Book Value", "field": "book_value", "formatter": "money" },
+    { "title": "Deposits", "field": "deposits", "formatter": "money" },
+    { "title": "Withdrawals", "field": "withdrawals", "formatter": "money" },
+    { "title": "Net Deposits", "field": "net_deposits", "formatter": "money" },
+    { "title": "Total Return", "field": "total_return", "formatter": "percent" },
+    { "title": "Cumulative Return", "field": "cumulative_return", "formatter": "percent" },
+    { "title": "% of Portfolio", "field": "pct_of_portfolio", "formatter": "percent" },
+]

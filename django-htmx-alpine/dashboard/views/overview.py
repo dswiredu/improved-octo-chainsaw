@@ -4,16 +4,16 @@ from django.http import HttpResponse
 import pandas as pd
 from django.core.cache import cache
 from django.db.models import Min, Max
-from .models import HistoricalPrice
-from .constants import PERIOD_MAPPING, DATA_FIELDS
+from ..models import HistoricalPrice
+from ..constants.overview import PERIOD_MAPPING, DATA_FIELDS
 
 import io
 from django.http import HttpResponse
 from django.conf import settings
 
-from .utils.services import get_historical_prices
-from .utils.analytics import compute_percentage_changes
-from .utils.graphing import generate_summary_sparklines, generate_chart
+from ..utils.services import get_historical_prices
+from ..utils.analytics import compute_percentage_changes
+from ..utils.graphing import generate_summary_sparklines, generate_chart
 
 
 def get_price_date_bounds():
@@ -22,7 +22,7 @@ def get_price_date_bounds():
         bounds = HistoricalPrice.objects.aggregate(
             min_date=Min("date"), max_date=Max("date")
         )
-        cache.set("historical_price_date_bounds", bounds, timeout=3600)
+        cache.set("historical_price_date_bounds", bounds, timeout=settings.CACHE_TIMEOUT)
     return bounds
 
 
@@ -69,7 +69,7 @@ def index(request):
         "chart_script": chart_script,
         "chart_div": chart_div,
     }
-    return render(request, "dashboard/index.html", context)
+    return render(request, "dashboard/overview.html", context)
 
 
 def get_chart_input_data(

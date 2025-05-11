@@ -1,0 +1,20 @@
+<div id="{{ table_id }}" class="w-full"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const table = new Tabulator("#{{ table_id }}", {
+            data: {{ data|safe }},
+            layout: "fitColumns",
+            responsiveLayout: "collapse",
+            {% if groupby %}groupBy: {{ groupby|safe }},{% endif %}
+            {% if columns %}columns: {{ columns|safe }},{% endif %}
+            pagination: true,
+            paginationSize: 25,
+            movableColumns: true,
+            resizableRows: true,
+            placeholder: "No data available.",
+        });
+
+        window["{{ table_id }}"] = table;
+    });
+</script>
