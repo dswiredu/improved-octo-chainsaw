@@ -1,0 +1,43 @@
+<div id="{{ table_id }}"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const columns = {{ columns|safe }};
+
+        new gridjs.Grid({
+            columns: columns.map(col => {
+                const cfg = { id: col.id, name: col.name };
+
+                if (col.formatter) {
+                    const isColored = col.formatter.endsWith("colored");
+
+                    if (col.formatter.startsWith("currency")) {
+                        cfg.formatter = cell => {
+                            const val = parseFloat(cell);
+                            const color = isColored ? (val < 0 ? "text-red-600" : "text-green-600") : "";
+                            return gridjs.html(`<span class="${color}">$${isNaN(val) ? "" : val.toLocaleString()}`);
+                        };
+                    } else if (col.formatter.startsWith("percent")) {
+                        cfg.formatter = cell => {
+                            const val = parseFloat(cell);
+                            const color = isColored ? (val < 0 ? "text-red-600" : "text-green-600") : "";
+                            return gridjs.html(`<span class="${color}">${isNaN(val) ? "" : (val * 100).toFixed(2)}%`);
+                        };
+                    }
+                }
+
+                return cfg;
+            }),
+            data: {{ data|safe }},
+            search: true,
+            pagination: { limit: 30, summary: true },
+            sort: true,
+            resizable: true,
+            className: {
+                // table: 'table table-sm',
+                th: 'py-2 px-3 font-bold text-gray-700',
+                td: 'py-2 px-3 text-base text-gray-800'
+            }
+        }).render(document.getElementById("{{ table_id }}"));
+    });
+</script>

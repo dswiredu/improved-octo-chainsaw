@@ -1,6 +1,14 @@
 <div id="{{ table_id }}" class="w-full"></div>
 
+
 <script>
+    // CDN to be placed in base.html
+    //     <!-- Tabulator CSS -->
+    // <link href="https://unpkg.com/tabulator-tables@5.6.1/dist/css/tabulator.min.css" rel="stylesheet">
+
+    // <!-- Tabulator JS -->
+    // <script src="https://unpkg.com/tabulator-tables@5.6.1/dist/js/tabulator.min.js"></script>
+
     document.addEventListener("DOMContentLoaded", function () {
         const table = new Tabulator("#{{ table_id }}", {
             data: {{ data|safe }},
@@ -9,7 +17,7 @@
             {% if groupby %}groupBy: {{ groupby|safe }},{% endif %}
             {% if columns %}columns: {{ columns|safe }},{% endif %}
             pagination: true,
-            paginationSize: 25,
+            paginationSize: 50,
             movableColumns: true,
             resizableRows: true,
             placeholder: "No data available.",
@@ -18,3 +26,5 @@
         window["{{ table_id }}"] = table;
     });
 </script>
+
+

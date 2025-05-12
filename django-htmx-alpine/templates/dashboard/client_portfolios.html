@@ -11,8 +11,11 @@
             </div>
             {% include "partials/_datepicker.html" with action_url=request.path initial_date=display_date %}
         </div>
-        <div>
-            {% include "partials/_tabulator.html" with table_id="portfolio-table" data=data_json columns=column_json groupby="['client_name', 'account_name']" %}
+        <div class="bg-gray-200 rounded shadow p-4 min-h-[1500px] overflow-hidden">
+            {% include "partials/_gridjs.html" with table_id="portfolio-table" data=data_json columns=column_json %}
+        </div>
+        <div class="flex items-center space-x-2 text-gray-600 text-2xl font-bold">
+            <div>Other Section</div>
         </div>
     </div>
 {% endblock %}

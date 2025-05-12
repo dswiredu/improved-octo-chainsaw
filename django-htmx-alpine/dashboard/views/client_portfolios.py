@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.core.cache import cache
 from django.db.models import Min, Max
 from ..models import PositionSnapshot
-from ..constants.client_portfolios import TABULATOR_COLUMNS
+from ..constants.client_portfolios import GRID_FIELDS
 
 from django.conf import settings
 
@@ -40,6 +40,6 @@ def index(request):
             range(max_date.year, min_date.year - 1, -1)
         ),
         "data_json": json.dumps(records),
-        "column_json": json.dumps(TABULATOR_COLUMNS)
+        "column_json": json.dumps(GRID_FIELDS)
     }
     return render(request, "dashboard/client_portfolios.html", context)
