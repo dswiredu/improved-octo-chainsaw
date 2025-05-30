@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+        <div class="flex justify-between items-center py-2">
+            <div class="flex items-center space-x-2 text-gray-600 text-2xl font-bold">
+                <div>Results</div>
+            </div>
+        </div>
+
+    <div class="fixed top-6 right-6 z-50 max-w-sm w-full">
+        {% include "components/alert.html" %}
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 my-6">
+        {% for card in metric_cards %}
+            {% with label=card.label value=card.value suffix=card.suffix icon=card.icon tooltip=card.tooltip colored=card.colored %}
+                {% include "components/stat_card.html" %}
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <div class="card bg-white shadow-lg rounded-lg mb-6 h-[600px]">
+        <div class="card-body p-4 h-full">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="card-title text-lg font-semibold">Cashflow Components Over Time</h2>
+
+                <!-- 3-dot Font Awesome dropdown (Alpine.js controlled) -->
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open"
+                            class="hover:text-gray-700 hover:bg-gray-100 p-2 rounded-md transition"
+                            title="More options">
+                        <i class="fas fa-ellipsis-h text-xl cursor-pointer"></i>
+                    </button>
+
+                    <ul x-show="open"
+                        @click.away="open = false"
+                        @click="open = false"
+                        x-transition
+                        class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
+                        style="display: none;">
+                        <li>
+                            <a href="{% url 'export_data_to_csv' %}?reuse_id={{ run_id }}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Export Data to CSV
+                            </a>
+                        </li>
+                        <li>
+                            <button
+                                hx-get="{% url 'toggle_graph_table' %}?reuse_id={{ run_id }}"
+                                hx-target="#line-chart-container"
+                                hx-swap="innerHTML"
+                                hx-include="#view_mode"
+                                class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                                Toggle Table/Graph
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="line-chart-container" class="h-full w-full">
+                {% include "modelling/s-curve/partials/cashflows_graph.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

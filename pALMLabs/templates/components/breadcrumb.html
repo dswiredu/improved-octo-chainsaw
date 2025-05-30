@@ -1,0 +1,23 @@
+<div class="flex items-center justify-between mb-6 flex-wrap gap-2 bg-white shadow-md p-4 rounded-md">
+    <!-- Title Left -->
+    <div class="text-base md:text-lg font-semibold text-gray-700">
+        {{ title }}
+    </div>
+
+    <!-- Breadcrumb Right -->
+    <div class="text-sm breadcrumbs">
+        <ul>
+            {% for crumb in breadcrumbs %}
+                <li>
+                    {% if crumb.name == active or not crumb.url %}
+                        <span class="text-gray-500">{{ crumb.name }}</span>
+                    {% else %}
+                        <a href="{{ crumb.url }}" class="hover:underline hover:text-blue-600 font-medium">
+                            {{ crumb.name }}
+                        </a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

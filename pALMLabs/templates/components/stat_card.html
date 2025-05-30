@@ -1,0 +1,38 @@
+{% load custom_filters %}
+
+
+<div 
+    class="stat shadow-md bg-white rounded-lg px-4 py-3 flex items-start gap-3 transform transition duration-500 ease-out opacity-0 translate-y-4"
+    x-init="setTimeout(() => $el.classList.remove('opacity-0', 'translate-y-4'), 20)"
+>
+    {% if icon %}
+        <div class="text-gray-500 text-2xl">
+            <i class="{{ icon }}"></i>
+        </div>
+    {% endif %}
+
+    <div {% if tooltip %}title="{{ tooltip }}"{% endif %}>
+        <div class="stat-title text-gray-500 text-sm">{{ label }}</div>
+
+        {# Value with optional color styling #}
+        <div class="stat-value text-xl font-semibold
+                    {% if colored %}
+                        {% if value|floatval < 0 %}
+                            text-red-600
+                        {% elif value|floatval > 0 %}
+                            text-green-600
+                        {% else %}
+                            text-gray-800
+                        {% endif %}
+                    {% else %}
+                        text-gray-800
+                    {% endif %}
+                    ">
+            {{ value }}
+        </div>
+
+        {% if suffix %}
+            <div class="stat-desc text-xs text-gray-400">{{ suffix }}</div>
+        {% endif %}
+    </div>
+</div>

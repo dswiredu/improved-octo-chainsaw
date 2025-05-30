@@ -1,0 +1,18 @@
+<div>
+    <h3 class="text-md font-semibold text-gray-700 mb-4">{{ title }}</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for field in fields %}
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+                <input
+                    type="number"
+                    name="{{ field.name }}"
+                    value="{{ field.value|default:"0" }}"
+                    step="0.01"
+                    min="0"
+                    class="input input-bordered w-full shadow-sm"
+                    required />
+            </div>
+        {% endfor %}
+    </div>
+</div>

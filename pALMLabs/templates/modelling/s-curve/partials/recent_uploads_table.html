@@ -1,0 +1,53 @@
+<!-- Recent SDA Uploads Table -->
+<div class="mt-10">
+  <h2 class="text-lg font-semibold text-gray-700 mb-4">Recent Uploads</h2>
+
+  <div class="overflow-x-auto bg-white rounded-lg shadow shadow-md">
+    <table class="table table-zebra w-full text-sm">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>PSA</th>
+          <th>SDA</th>
+          <th>Security File</th>
+          <th>Curve File</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for run in recent_uploads %}
+          <tr>
+            <td>{{ run.uploaded_at|date:"Y-m-d H:i" }}</td>
+            <td>{{ run.psa }}</td>
+            <td>{{ run.sda }}</td>
+            <td class="truncate max-w-[150px]" title="{{ run.security_file.name }}">
+              {{ run.security_file.name|default:"—" }}
+            </td>
+            <td class="truncate max-w-[150px]" title="{{ run.curve_file.name }}">
+              {{ run.curve_file.name|default:"—" }}
+            </td>
+            <td>
+              {% if run.success %}
+                <span class="badge badge-success">Success</span>
+              {% else %}
+                <span class="badge badge-error">Failed</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if run.success %}
+                <a href="{% url 's-curve-results' %}?reuse_id={{ run.id }}" class="btn btn-sm btn-outline">Run</a>
+              {% else %}
+                <span class="text-sm text-gray-400">Unavailable</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" class="text-center text-gray-400 py-4">No uploads yet.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

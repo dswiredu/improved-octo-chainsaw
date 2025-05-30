@@ -3,4 +3,4 @@ django
 python-dotenv
 psycopg2
 xlsxwriter
-bokeh=3.7.2
+bokeh==3.7.2
