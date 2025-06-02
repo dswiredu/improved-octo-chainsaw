@@ -2,14 +2,14 @@
 <div class="navbar bg-white border border-solid shadow-md fixed top-0 left-0 right-0 z-50">
     <!-- 1) App name / logo -->
     <div class="px-4">
-        <a class="text-2xl font-bold tracking-tight text-gray-900 font-sans">
+        <a class="text-2xl font-bold tracking-tight text-gray-900 font-sans" href="/">
             pALM<span class="text-blue-600">Labs</span>
         </a>
     </div>
 
     <div class="divider divider-horizontal"></div>
 
-    <!-- 2) Search – grows to fill available space, with separator -->
+    <!-- 2) Search bar -->
     <div class="flex-1 px-4 mx-4">
         <input
             type="text"
@@ -17,18 +17,28 @@
             class="input w-full bg-white cursor-text focus:outline-none focus:ring-0 focus:border-transparent"
         />
     </div>
+
     <div class="divider divider-horizontal"></div>
 
-    <!-- 3) User avatar (no dropdown) -->
-    <div class="px-4">
-        <div class="avatar">
-            <div class="w-10 rounded-full">
-                <img
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                    alt="User Avatar"
-                />
+    <!-- 3) Avatar dropdown shown only if logged in -->
+    {% if user.is_authenticated %}
+        <div class="px-4 dropdown dropdown-end">
+            <div tabindex="0" role="button" class="avatar btn btn-ghost btn-circle">
+                <div class="w-10 rounded-full">
+                    <img
+                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                        alt="User Avatar"
+                    />
+                </div>
             </div>
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-white rounded-box w-52">
+                <li>
+                    <form method="POST" action="{% url 'account_logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Log Out</button>
+                    </form>
+                </li>
+            </ul>
         </div>
-    </div>
-
+    {% endif %}
 </div>

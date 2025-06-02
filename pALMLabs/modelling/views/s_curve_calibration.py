@@ -15,7 +15,9 @@ from ..utils.services import generate_and_save_sda_results, get_metric_card_cont
 from ..utils.graphing import plot_mortgage_floating_cashflows
 from ..models import SDACurveInputs 
 
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def load_data(request):
     breadcrumbs = [
         {"name": "SDA Curve Calibration"},
@@ -74,7 +76,7 @@ def load_data(request):
 
     return render(request, "modelling/s-curve/load.html", context)
 
-
+@login_required
 def get_results(request):
 
     run_id = request.GET.get("reuse_id")
@@ -100,6 +102,7 @@ def get_results(request):
         }
     return render(request, "modelling/s-curve/results.html", context)
 
+@login_required
 def export_data_to_csv(request):
     run_id = request.GET.get("reuse_id")
     if run_id:
@@ -125,6 +128,7 @@ def export_data_to_csv(request):
     response['Content-Disposition'] = 'attachment; filename="_cashflows.csv"'
     return response
 
+@login_required
 def toggle_graph_table(request):
     run_id = request.GET.get("reuse_id")
     if run_id:

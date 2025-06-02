@@ -15,15 +15,15 @@
         </thead>
         <tbody>
             {% for row in cashflows %}
-            <tr>
-                <td>{{ row.timestep }}</td>
-                <td>{{ row.balance|floatformat:2 }}</td>
-                <td>{{ row.interest|floatformat:2 }}</td>
-                <td>{{ row.default|floatformat:2 }}</td>
-                <td>{{ row.prepayment|floatformat:2 }}</td>
-                <td>{{ row.principal|floatformat:2 }}</td>
-                <td>{{ row.totalcf|floatformat:2 }}</td>
-            </tr>
+                <tr>
+                    <td>{{ row.timestep }}</td>
+                    <td>{{ row.balance|floatformat:2 }}</td>
+                    <td>{{ row.interest|floatformat:2 }}</td>
+                    <td>{{ row.default|floatformat:2 }}</td>
+                    <td>{{ row.prepayment|floatformat:2 }}</td>
+                    <td>{{ row.principal|floatformat:2 }}</td>
+                    <td>{{ row.totalcf|floatformat:2 }}</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
