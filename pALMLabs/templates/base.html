@@ -55,6 +55,9 @@
             </div>
         </div>
 
-        {% block scripts %}{% endblock %}
+        {% block scripts %}
+            <!-- Dont forget to add {{ block.super }} in any child scripts before writing them. -->
+            {% include "partials/bokeh_cleanup.html" %}
+        {% endblock %}
     </body>
 </html>

@@ -75,3 +75,9 @@ def get_metric_card_context(metrics: SDACurveRunMetrics) -> List[Dict]:
     ]
     return metric_cards
 
+def convert_cashflows_to_dataframe(run: SDACurveInputs) -> pd.DataFrame:
+    df = pd.DataFrame(list(run.metrics.cashflows.values(
+        'timestep', 'balance', 'interest', 'default', 'prepayment', 'principal', 'totalcf'
+    )))
+    return df
+

@@ -1,30 +1,32 @@
 
-<input id="view_mode" type="hidden" name="view_mode" value="table">
-<div class="overflow-auto max-h-[500px]">
-    <table class="table table-zebra w-full text-sm">
-        <thead>
-            <tr>
-                <th>Timestep</th>
-                <th>Balance</th>
-                <th>Interest</th>
-                <th>Default</th>
-                <th>Prepayment</th>
-                <th>Principal</th>
-                <th>Total CF</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in cashflows %}
+<div id="line-chart-container">
+    <input id="view_mode" type="hidden" name="view_mode" value="table">
+    <div class="overflow-auto max-h-[500px]">
+        <table class="table table-zebra w-full text-sm">
+            <thead>
                 <tr>
-                    <td>{{ row.timestep }}</td>
-                    <td>{{ row.balance|floatformat:2 }}</td>
-                    <td>{{ row.interest|floatformat:2 }}</td>
-                    <td>{{ row.default|floatformat:2 }}</td>
-                    <td>{{ row.prepayment|floatformat:2 }}</td>
-                    <td>{{ row.principal|floatformat:2 }}</td>
-                    <td>{{ row.totalcf|floatformat:2 }}</td>
+                    <th>Timestep</th>
+                    <th>Balance</th>
+                    <th>Interest</th>
+                    <th>Default</th>
+                    <th>Prepayment</th>
+                    <th>Principal</th>
+                    <th>Total CF</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for row in cashflows %}
+                    <tr>
+                        <td>{{ row.timestep }}</td>
+                        <td>{{ row.balance|floatformat:2 }}</td>
+                        <td>{{ row.interest|floatformat:2 }}</td>
+                        <td>{{ row.default|floatformat:2 }}</td>
+                        <td>{{ row.prepayment|floatformat:2 }}</td>
+                        <td>{{ row.principal|floatformat:2 }}</td>
+                        <td>{{ row.totalcf|floatformat:2 }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>

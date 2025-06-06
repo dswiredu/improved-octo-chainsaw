@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils.http import urlencode
+from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 import pandas as pd
@@ -11,14 +12,19 @@ from io import StringIO
 from django.http import HttpResponse
 
 from ..utils.validators import validate_scurve_upload
-from ..utils.services import generate_and_save_sda_results, get_metric_card_context
+from ..utils.services import (
+    generate_and_save_sda_results,
+    get_metric_card_context,
+    convert_cashflows_to_dataframe
+)
 from ..utils.graphing import plot_mortgage_floating_cashflows
-from ..models import SDACurveInputs 
+from ..models import SDACurveInputs
+from core.utils.normalization import min_max_normalize
 
 from django.contrib.auth.decorators import login_required
 
 @login_required
-def load_data(request):
+def load_data(request: HttpRequest):
     breadcrumbs = [
         {"name": "SDA Curve Calibration"},
         {"name": "Load Data"},  # current page
@@ -77,7 +83,7 @@ def load_data(request):
     return render(request, "modelling/s-curve/load.html", context)
 
 @login_required
-def get_results(request):
+def get_results(request: HttpRequest):
 
     run_id = request.GET.get("reuse_id")
     if run_id:
@@ -90,8 +96,9 @@ def get_results(request):
     # messages.success(request, f"Successfully run MortgageFloating cashflows for {run.uploaded_at}")
     
     metric_cards = get_metric_card_context(run.metrics)
+    cashflows_df = convert_cashflows_to_dataframe(run)
 
-    cf_script, cf_div = plot_mortgage_floating_cashflows(run.metrics.cashflows)
+    cf_script, cf_div = plot_mortgage_floating_cashflows(cashflows_df)
 
     context = {
         "run_id": run_id,
@@ -101,6 +108,7 @@ def get_results(request):
         "cf_script": cf_script,
         }
     return render(request, "modelling/s-curve/results.html", context)
+
 
 @login_required
 def export_data_to_csv(request):
@@ -150,4 +158,35 @@ def toggle_graph_table(request):
             "cashflows": run.metrics.cashflows.all(),
         })
     
+    return HttpResponse(html)
+
+@login_required
+def get_scaled_results(request: HttpRequest) -> HttpResponse:
+    run_id = request.GET.get("reuse_id")
+    if run_id:
+        run = get_object_or_404(SDACurveInputs, id=run_id)
+    else:
+        run = SDACurveInputs.objects.latest("uploaded_at")
+    
+    df = pd.DataFrame(list(run.metrics.cashflows.values(
+        'timestep', 'balance', 'interest', 'default', 'prepayment', 'principal', 'totalcf'
+    )))
+
+    scale = request.GET.get("data_scale", "actual")
+    if scale == "normalized":
+        scaled_data  = min_max_normalize(df, exclude="timestep")
+    else:
+        scaled_data = df.copy()
+    
+    view_mode = request.GET.get("view_mode", "graph")
+    if view_mode == "graph":
+        cf_div, cf_script = plot_mortgage_floating_cashflows(scaled_data)
+        html = render_to_string("modelling/s-curve/partials/cashflows_graph.html", {
+            "cf_div": cf_div,
+            "cf_script": cf_script,
+        })
+    else:
+        html = render_to_string("modelling/s-curve/partials/cashflows_table.html", {
+            "cashflows": run.metrics.cashflows.all(),
+        })
     return HttpResponse(html)

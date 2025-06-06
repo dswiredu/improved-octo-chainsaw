@@ -3,10 +3,8 @@ from bokeh.embed import components
 from bokeh.models import ColumnDataSource, HoverTool, NumeralTickFormatter
 import pandas as pd
 
-def plot_mortgage_floating_cashflows(qs):
-    df = pd.DataFrame(list(qs.values(
-        'timestep', 'balance', 'interest', 'default', 'prepayment', 'principal', 'totalcf'
-    )))
+def plot_mortgage_floating_cashflows(df: pd.DataFrame):
+    # frame has 'timestep', 'balance', 'interest', 'default', 'prepayment', 'principal', 'totalcf'
 
     source = ColumnDataSource(df)
 

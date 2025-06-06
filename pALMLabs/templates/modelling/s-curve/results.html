@@ -25,6 +25,20 @@
             <div class="flex justify-between items-center mb-2">
                 <h2 class="card-title text-lg font-semibold">Cashflow Components Over Time</h2>
 
+                <select
+                    id="data_scale"
+                    name="data_scale"
+                    class="select select-bordered select-sm"
+                    hx-get="{% url 'scale_cashflow_results' %}?reuse_id={{ run_id }}"
+                    hx-target="#line-chart-container"
+                    hx-swap="outerHTML"
+                    hx-include="#view_mode"
+                    hx-trigger="change"
+                >
+                    <option value="actual" {% if scale == "actual" %}selected{% endif %}>Actual</option>
+                    <option value="normalized" {% if scale == "normalized" %}selected{% endif %}>Normalized</option>
+                </select>
+
                 <!-- 3-dot Font Awesome dropdown (Alpine.js controlled) -->
                 <div x-data="{ open: false }" class="relative">
                     <button @click="open = !open"
@@ -41,7 +55,7 @@
                         style="display: none;">
                         <li>
                             <a href="{% url 'export_data_to_csv' %}?reuse_id={{ run_id }}"
-                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Export Data to CSV
                             </a>
                         </li>
@@ -49,7 +63,7 @@
                             <button
                                 hx-get="{% url 'toggle_graph_table' %}?reuse_id={{ run_id }}"
                                 hx-target="#line-chart-container"
-                                hx-swap="innerHTML"
+                                hx-swap="outerHTML"
                                 hx-include="#view_mode"
                                 class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                             >
@@ -59,8 +73,9 @@
                     </ul>
                 </div>
             </div>
+            <div>
 
-            <div id="line-chart-container" class="h-full w-full">
+            <div class="h-full w-full">
                 {% include "modelling/s-curve/partials/cashflows_graph.html" %}
             </div>
         </div>
