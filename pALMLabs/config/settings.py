@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "userauth",
     "core",
     "modelling",
+    "scenario_analysis",
 ]
 
 SITE_ID = 1
@@ -76,6 +77,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "core.context_processors.sidebar_nav_items",
             ],
             "string_if_invalid": "🚨 INVALID: %s",
         },

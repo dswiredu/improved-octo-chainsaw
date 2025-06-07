@@ -1,52 +1,57 @@
-<!-- partials/_sidebar.html — stable dark sidebar + smooth hover transitions -->
 <div
-  x-data="{ open: false }"
+  x-data="{ open: false, activeSection: null }"
   x-init="$nextTick(() => open = false)"
   @mouseenter="open = true"
   @mouseleave="open = false"
   class="fixed top-0 left-0 pt-16 h-screen w-16 bg-gray-900 text-gray-100 border border-solid shadow-lg transition-[width] duration-300 ease-in-out z-50 overflow-hidden"
   :class="open ? 'w-64' : 'w-16'"
 >
-  {% with request.resolver_match.url_name as current %}
-    <ul class="pt-4 space-y-1 text-lg">
+  {% with current=request.resolver_match.url_name %}
+    <ul class="pt-4 space-y-1 text-base">
+      {% for section in sidebar_nav_items %}
+        <li x-data="{ sub: false }" @click.outside="sub = false">
+          <!-- Section Button -->
+          <button
+            type="button"
+            @click="
+              if (activeSection === {{ forloop.counter }}) {
+                sub = false; activeSection = null;
+              } else {
+                sub = true; activeSection = {{ forloop.counter }};
+              }
+            "
+            class="flex items-center w-full gap-4 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-700 hover:text-white text-gray-400
+              {% for item in section.items %}{% if current == item.url_name %}bg-gray-700 text-white font-semibold{% endif %}{% endfor %}"
+          >
+            <i class="fa-solid {{ section.icon }} text-lg"></i>
+            <span x-show="open" x-cloak x-transition.opacity.duration.150ms class="flex-1 text-left whitespace-nowrap">
+              {{ section.label }}
+            </span>
+            <i x-show="open" x-cloak :class="sub ? 'fa-solid fa-angle-up' : 'fa-solid fa-angle-down'" class="text-xs"></i>
+          </button>
 
-    <!-- Modelling Dropdown -->
-      <li x-data="{ sub: false }" @click.outside="sub = false">
-        <button
-          type="button"
-          @click="sub = !sub"
-          class="flex items-center w-full gap-4 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-700 hover:text-white text-gray-400
-                 {% if current == 's-curve-load' or current == 's-curve-results' %}bg-gray-700 text-white font-medium{% endif %}"
-        >
-          <i class="fa-solid fa-flask-vial text-lg"></i>
-          <span x-show="open" x-cloak x-transition.opacity.duration.150ms class="flex-1 text-left whitespace-nowrap">Modelling</span>
-          <i
-            x-show="open"
+          <!-- Sub-items -->
+          <ul
+            x-show="sub && open"
             x-cloak
-            :class="sub ? 'fa-solid fa-angle-up' : 'fa-solid fa-angle-down'"
-            class="text-xs transition-transform duration-150"
-          ></i>
-        </button>
-
-      <!-- Sub-items with guide line -->
-        <ul
-          x-show="sub && open"
-          x-cloak
-          x-transition.origin.top.duration.150ms
-          class="pl-6 mt-1 space-y-1 border-l border-gray-700"
-        >
-          <li>
-            <a
-              href="{% url 's-curve-load' %}"
-              class="flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-700 hover:text-white text-gray-400
-                     {% if current == 's-curve-load' %}bg-gray-700 text-white font-medium{% endif %}"
-            >
-              <i class="fa-solid fa-chart-line text-[0.85rem]"></i>
-              <span>SDA Curve</span>
-            </a>
-          </li>
-        </ul>
-      </li>
+            x-transition.origin.top.duration.150ms
+            class="pl-6 mt-1 space-y-0.5 border-l border-gray-700"
+          >
+            {% for item in section.items %}
+              <li>
+                <a
+                  href="{% url item.url_name %}"
+                  class="flex items-center gap-3 px-4 py-2 rounded-md transition duration-200 hover:bg-gray-500 hover:text-white text-gray-400
+                    {% if current == item.url_name %}bg-gray-700 text-white font-semibold{% endif %}"
+                >
+                  <i class="fa-solid {{ item.icon }} text-sm"></i>
+                  <span>{{ item.label }}</span>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
     </ul>
   {% endwith %}
 </div>

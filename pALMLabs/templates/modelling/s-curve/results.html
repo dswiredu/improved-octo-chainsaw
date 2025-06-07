@@ -55,7 +55,7 @@
                         style="display: none;">
                         <li>
                             <a href="{% url 'export_data_to_csv' %}?reuse_id={{ run_id }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Export Data to CSV
                             </a>
                         </li>
@@ -75,9 +75,9 @@
             </div>
             <div>
 
-            <div class="h-full w-full">
-                {% include "modelling/s-curve/partials/cashflows_graph.html" %}
+                <div class="h-full w-full">
+                    {% include "modelling/s-curve/partials/cashflows_graph.html" %}
+                </div>
             </div>
         </div>
-    </div>
 {% endblock %}
