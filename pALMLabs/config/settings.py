@@ -63,6 +63,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "core.middleware.HTMXAuthMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -155,6 +156,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 # ALLAUTH settings
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
-SESSION_COOKIE_AGE = 900  # 15 minutes
+LOGIN_REDIRECT_URL = "/after-login/"
+SESSION_COOKIE_AGE = 86400  # 1 day for now!!
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

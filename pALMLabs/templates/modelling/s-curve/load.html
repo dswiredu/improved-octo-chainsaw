@@ -1,12 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<!-- Floating alert (top-right, outside container, no overlap) -->
-  <div class="fixed top-6 right-6 z-50 max-w-sm w-full">
-    {% include "components/alert.html" %}
-  </div>
-
 <!-- Main content container -->
   <div class="px-6 py-6 w-full max-w-screen-2xl mx-auto">
 
@@ -20,7 +14,7 @@
 
     <!-- Card-style form (2/5 width) -->
       <div class="lg:col-span-2 bg-white shadow shadow-md rounded-lg p-8">
-        <form method="post" enctype="multipart/form-data" action="{% url 's-curve-load' %}" class="space-y-8">
+        <form method="post" enctype="multipart/form-data" action="{% url 'modelling:s-curve-load' %}" class="space-y-8">
           {% csrf_token %}
 
         <!-- Section Header -->

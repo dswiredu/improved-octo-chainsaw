@@ -1,9 +1,10 @@
-<!-- base.html -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="csrf-token" content="{{ csrf_token }}">
         <title>{% block title %}{% endblock %}</title>
 
     <!-- TailwindCSS -->
@@ -38,7 +39,10 @@
 
     <!-- Grid.js JS -->
         <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
-
+    
+    <!-- Choices.js -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 
         {% block head_extra %}{% endblock %}
     </head>
@@ -50,6 +54,9 @@
             <div class="ml-16 mt-16 flex-1 flex flex-col bg-gray-100">
                 {% include "partials/_nav_search.html" %}
                 <main class="p-3">
+                    <div class="fixed top-6 right-6 z-50 max-w-sm w-full">
+                        {% include "components/alert.html" %}
+                    </div>
                     {% block content %}{% endblock %}
                 </main>
             </div>
@@ -57,7 +64,9 @@
 
         {% block scripts %}
             <!-- Dont forget to add {{ block.super }} in any child scripts before writing them. -->
-            {% include "partials/bokeh_cleanup.html" %}
+            <script src="{% static 'js/choices-init.js' %}" defer></script>
+            <script src="{% static 'js/csrf_setup.js' %}" defer></script>
+            <script src="{% static 'js/bokeh_cleanup.js' %}" defer></script>
         {% endblock %}
     </body>
 </html>

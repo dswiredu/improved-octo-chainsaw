@@ -1,6 +1,6 @@
-
 from django.contrib import admin
 from .models import *
+
 
 # Register your models here.
 class ScenarioDataSetAdmin(admin.ModelAdmin):
@@ -8,12 +8,13 @@ class ScenarioDataSetAdmin(admin.ModelAdmin):
         "id",
         "user__username",
         "name",
-        "filename",
+        "file",
         "uploaded_at",
         "status",
         "logs",
-        "column_names"
+        "column_names",
     )
+
 
 class ScenarioValueAdmin(admin.ModelAdmin):
     list_display = (
@@ -22,7 +23,6 @@ class ScenarioValueAdmin(admin.ModelAdmin):
         "variable",
         "value",
     )
-
 
 
 admin.site.register(ScenarioDataSet, ScenarioDataSetAdmin)

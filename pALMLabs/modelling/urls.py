@@ -2,6 +2,8 @@ from django.urls import path
 
 from .views import s_curve_calibration
 
+app_name = "modelling"
+
 urlpatterns = [
     path("", s_curve_calibration.load_data, name="s-curve-load"),
     path("results/", s_curve_calibration.get_results, name="s-curve-results"),

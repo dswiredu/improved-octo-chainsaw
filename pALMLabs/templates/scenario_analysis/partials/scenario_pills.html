@@ -1,0 +1,8 @@
+{% for scenario in scenarios %}
+    <span class="badge badge-info px-2 py-1 rounded-full">
+        <i class="fas fa-database mr-1"></i> {{ scenario.name }}
+    </span>
+{% empty %}
+    <span class="text-gray-500 text-sm">No scenarios selected</span>
+{% endfor %}
+

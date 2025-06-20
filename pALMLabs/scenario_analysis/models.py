@@ -16,7 +16,7 @@ class ScenarioDataSet(models.Model):
         User, on_delete=models.CASCADE, related_name="scenario_datasets"
     )
     name = models.CharField(max_length=50)
-    filename = models.CharField(max_length=255)
+    file = models.FileField(upload_to="scenario_analysis/scenarios/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     status = models.CharField(

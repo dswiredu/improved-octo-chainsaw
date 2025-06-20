@@ -7,11 +7,6 @@
             <div>Results</div>
         </div>
     </div>
-
-    <div class="fixed top-6 right-6 z-50 max-w-sm w-full">
-        {% include "components/alert.html" %}
-    </div>
-
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 my-6">
         {% for card in metric_cards %}
             {% with label=card.label value=card.value suffix=card.suffix icon=card.icon tooltip=card.tooltip colored=card.colored %}
@@ -29,7 +24,7 @@
                     id="data_scale"
                     name="data_scale"
                     class="select select-bordered select-sm"
-                    hx-get="{% url 'scale_cashflow_results' %}?reuse_id={{ run_id }}"
+                    hx-get="{% url 'modelling:scale_cashflow_results' %}?reuse_id={{ run_id }}"
                     hx-target="#line-chart-container"
                     hx-swap="outerHTML"
                     hx-include="#view_mode"
@@ -54,14 +49,14 @@
                         class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
                         style="display: none;">
                         <li>
-                            <a href="{% url 'export_data_to_csv' %}?reuse_id={{ run_id }}"
+                            <a href="{% url 'modelling:export_data_to_csv' %}?reuse_id={{ run_id }}"
                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Export Data to CSV
                             </a>
                         </li>
                         <li>
                             <button
-                                hx-get="{% url 'toggle_graph_table' %}?reuse_id={{ run_id }}"
+                                hx-get="{% url 'modelling:toggle_graph_table' %}?reuse_id={{ run_id }}"
                                 hx-target="#line-chart-container"
                                 hx-swap="outerHTML"
                                 hx-include="#view_mode"

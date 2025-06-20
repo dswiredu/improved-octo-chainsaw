@@ -24,9 +24,10 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("allauth.urls")),
+    path("", include("core.urls")),
 
-    path("", include("modelling.urls")),
-    path("scenario-analysis/", include("scenario_analysis.urls")),
+    path("", include("modelling.urls", namespace="modelling")),
+    path("scenario-analysis/", include("scenario_analysis.urls", namespace="scenario_analysis")),
 ]
 
 if settings.DEBUG:

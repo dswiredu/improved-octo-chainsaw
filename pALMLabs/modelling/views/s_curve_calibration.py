@@ -28,7 +28,7 @@ def load_data(request: HttpRequest):
     breadcrumbs = [
         {"name": "SDA Curve Calibration"},
         {"name": "Load Data"},  # current page
-        {"name": "Results", "url": reverse("s-curve-results")},
+        {"name": "Results", "url": reverse("modelling:s-curve-results")},
     ]
 
     context = {

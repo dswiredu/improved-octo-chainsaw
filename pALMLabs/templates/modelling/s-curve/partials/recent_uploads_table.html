@@ -36,7 +36,7 @@
             </td>
             <td>
               {% if run.success %}
-                <a href="{% url 's-curve-results' %}?reuse_id={{ run.id }}" class="btn btn-sm btn-outline">Run</a>
+                <a href="{% url 'modelling:s-curve-results' %}?reuse_id={{ run.id }}" class="btn btn-sm btn-outline">Run</a>
               {% else %}
                 <span class="text-sm text-gray-400">Unavailable</span>
               {% endif %}

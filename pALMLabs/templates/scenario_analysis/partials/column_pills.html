@@ -1,0 +1,9 @@
+<div id="selected-columns" class="flex flex-wrap gap-2 mt-2">
+    {% for column in columns %}
+        <span class="badge badge-success px-2 py-1 rounded-full">
+            <i class="fas fa-columns mr-1"></i> {{ column }}
+        </span>
+    {% empty %}
+        <span class="text-gray-500 text-sm">No columns selected</span>
+    {% endfor %}
+</div>

@@ -8,15 +8,15 @@ def sidebar_nav_items(request: HttpRequest):
             "label": "Modelling",
             "icon": "fa-flask-vial",
             "items": [
-                {"label": "SDA Curve", "url_name": "s-curve-load", "icon": "fa-chart-line"},
+                {"label": "SDA Curve", "url_name": "modelling:s-curve-load", "icon": "fa-chart-line"},
             ],
         },
         {
             "label": "Scenario Analysis",
             "icon": "fa-diagram-project",
             "items": [
-                {"label": "Load Scenario Data", "url_name": "upload-scenarios", "icon": "fa-upload"},
-                {"label": "Compare Scenarios", "url_name": "compare-scenarios", "icon": "fa-code-compare"},
+                {"label": "Load Scenario Data", "url_name": "scenario_analysis:upload-scenarios", "icon": "fa-upload"},
+                {"label": "Compare Scenarios", "url_name": "scenario_analysis:compare-scenarios", "icon": "fa-code-compare"},
             ],
         },
     ]

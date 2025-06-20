@@ -8,6 +8,7 @@
 
             <form method="POST" action="{% url 'account_login' %}" class="space-y-4">
                 {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next|default:'/' }}">
                 {{ form.non_field_errors }}
 
                 <div>

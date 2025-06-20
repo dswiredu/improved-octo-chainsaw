@@ -1,6 +1,7 @@
 from django import forms
 import pandas as pd
 
+
 class ScenarioUploadForm(forms.Form):
     # Only mapping_file is handled by the Django form
     mapping_file = forms.FileField(
@@ -17,10 +18,14 @@ class ScenarioUploadForm(forms.Form):
             raise forms.ValidationError(f"Could not read mapping file: {e}")
 
         if "filename" not in df.columns or "scenario_name" not in df.columns:
-            raise forms.ValidationError("Mapping file must contain 'filename' and 'scenario_name' columns.")
+            raise forms.ValidationError(
+                "Mapping file must contain 'filename' and 'scenario_name' columns."
+            )
 
         if any("/" in fname or "\\" in fname for fname in df["filename"]):
-            raise forms.ValidationError("Filenames must not include folder paths — just the name.")
+            raise forms.ValidationError(
+                "Filenames must not include folder paths — just the name."
+            )
 
         mapping_file.seek(0)  # Reset pointer for reuse later
         return mapping_file

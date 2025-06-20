@@ -1,0 +1,38 @@
+<div class="card bg-white rounded-lg shadow border border-gray-200">
+    <div class="overflow-x-auto">
+        <table class="table table-sm w-full text-sm">
+            <thead class="bg-gray-150 uppercase text-xs text-gray-600 tracking-wide">
+                <tr>
+                    <th class="px-4 py-3 text-left font-semibold">Name</th>
+                    <th class="px-4 py-3 text-left font-semibold">Filename</th>
+                    <th class="px-4 py-3 text-left font-semibold">Status</th>
+                    <th class="px-4 py-3 text-left font-semibold">Uploaded</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dataset in datasets %}
+                    <tr class="hover:bg-gray-100 transition-colors border-b border-gray-200">
+                        <td class="px-4 py-2 text-gray-800 whitespace-nowrap font-medium">{{ dataset.name }}</td>
+                        <td class="px-4 py-2 max-w-sm truncate text-gray-600" title="{{ dataset.file }}">{{ dataset.file }}</td>
+                        <td class="px-4 py-2">
+                            {% if dataset.status == "done" %}
+                                <span class="badge badge-success badge-sm rounded-full">Done</span>
+                            {% elif dataset.status == "processing" %}
+                                <span class="badge badge-warning badge-sm rounded-full">Processing</span>
+                            {% elif dataset.status == "error" %}
+                                <span class="badge badge-error badge-sm rounded-full">Error</span>
+                            {% else %}
+                                <span class="badge badge-neutral badge-sm rounded-full">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-2 text-gray-500 whitespace-nowrap">{{ dataset.uploaded_at|date:"Y-m-d H:i" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="py-4 text-center text-gray-400">No datasets uploaded yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

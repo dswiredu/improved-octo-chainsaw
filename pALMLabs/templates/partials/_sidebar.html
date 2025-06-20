@@ -14,14 +14,14 @@
           <button
             type="button"
             @click="
-              if (activeSection === {{ forloop.counter }}) {
-                sub = false; activeSection = null;
-              } else {
-                sub = true; activeSection = {{ forloop.counter }};
-              }
-            "
+                    if (activeSection === {{ forloop.counter }}) {
+                    sub = false; activeSection = null;
+                    } else {
+                    sub = true; activeSection = {{ forloop.counter }};
+                    }
+                   "
             class="flex items-center w-full gap-4 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out hover:bg-gray-700 hover:text-white text-gray-400
-              {% for item in section.items %}{% if current == item.url_name %}bg-gray-700 text-white font-semibold{% endif %}{% endfor %}"
+                   {% for item in section.items %}{% if current == item.url_name %}bg-gray-700 text-white font-semibold{% endif %}{% endfor %}"
           >
             <i class="fa-solid {{ section.icon }} text-lg"></i>
             <span x-show="open" x-cloak x-transition.opacity.duration.150ms class="flex-1 text-left whitespace-nowrap">
@@ -42,7 +42,7 @@
                 <a
                   href="{% url item.url_name %}"
                   class="flex items-center gap-3 px-4 py-2 rounded-md transition duration-200 hover:bg-gray-500 hover:text-white text-gray-400
-                    {% if current == item.url_name %}bg-gray-700 text-white font-semibold{% endif %}"
+                         {% if current == item.url_name %}bg-gray-700 text-white font-semibold{% endif %}"
                 >
                   <i class="fa-solid {{ item.icon }} text-sm"></i>
                   <span>{{ item.label }}</span>

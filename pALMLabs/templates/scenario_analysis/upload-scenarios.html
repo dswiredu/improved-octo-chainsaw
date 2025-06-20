@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load form_filters %}
+
+{% block content %}
+    <div class="w-full max-w-screen-xl mx-auto px-4 py-8 space-y-6 overflow-x-hidden min-h-screen">
+
+        <!-- Page Header + Buttons -->
+        <div class="flex justify-between items-center flex-wrap gap-4">
+            <h1 class="text-2xl font-semibold text-gray-800">Scenario Uploads</h1>
+
+            <div class="flex gap-2">
+                <!-- New Upload -->
+                <button
+                    class="btn btn-sm border border-gray-300 text-gray-700 bg-white hover:bg-gray-150 rounded-md flex items-center gap-2"
+                    onclick="upload_scenarios_modal.showModal()"
+                >
+                    <i class="fas fa-plus"></i>
+                    New Upload
+                </button>
+
+                <!-- Clear Uploads -->
+                <button
+                    class="btn btn-sm border border-red-300 text-red-700 bg-white hover:bg-red-50 rounded-md flex items-center gap-2"
+                    hx-delete="{% url 'scenario_analysis:clear-datasets' %}"
+                    hx-confirm="Are you sure you want to delete all uploads?"
+                    hx-target="#dataset-status-table"
+                    hx-swap="innerHTML"
+                >
+                    <i class="fas fa-trash-alt"></i>
+                    Clear Uploads
+                </button>
+            </div>
+        </div>
+
+        <!-- Background processing trigger -->
+        <div
+            hx-get="{% url 'scenario_analysis:start-background-processing' %}"
+            hx-trigger="load"
+            hx-swap="none"
+        ></div>
+
+        <!-- Dataset Table -->
+        <div class="w-full overflow-auto">
+            <div
+                id="dataset-status-table"
+                hx-get="{% url 'scenario_analysis:dataset-status-table' %}"
+                hx-trigger="load, every 10s"
+                hx-swap="innerHTML"
+            >
+                {% include "scenario_analysis/partials/dataset_status_table.html" %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Upload Modal -->
+    <dialog id="upload_scenarios_modal" class="modal modal-middle">
+        <div class="modal-box w-full max-w-md space-y-6 animate-slide-in-right">
+            <h3 class="font-bold text-lg">Upload Scenario Files</h3>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-control w-full space-y-2">
+                    <label for="id_files" class="label">
+                        <span class="label-text font-medium">Scenario Result Files (CSV)</span>
+                    </label>
+                    <input
+                        type="file"
+                        name="files"
+                        id="id_files"
+                        multiple
+                        required
+                        class="file-input file-input-bordered w-full"
+                    />
+                    {% if form.non_field_errors %}
+                        <p class="text-red-500 text-sm">{{ form.non_field_errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-control w-full space-y-2 mt-4">
+                    <label class="label">
+                        <span class="label-text font-medium">Mapping File</span>
+                    </label>
+                    {{ form.mapping_file|add_class:"file-input file-input-bordered w-full" }}
+                    {% if form.mapping_file.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ form.mapping_file.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="modal-action mt-6 flex justify-end gap-3">
+                    <button type="submit" class="btn md:w-auto bg-gray-900 text-white hover:bg-gray-600">Upload</button>
+                    <button type="button" class="btn md:w-auto bg-gray-100 text-black hover:bg-gray-200" onclick="upload_scenarios_modal.close()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+{% endblock %}

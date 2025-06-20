@@ -1,0 +1,18 @@
+<ul class="mt-2">
+    {% for scenario in scenarios %}
+        <li>
+        <button
+            type="button"
+            class="btn btn-sm btn-outline btn-info w-full text-left mb-1"
+            hx-post="{% url 'scenario_analysis:add_scenario_to_pill' %}"
+            hx-vals='{"scenario_id": "{{ scenario.id }}"}'
+            hx-target="#selected-scenarios"
+            hx-swap="beforeend"
+        >
+            {{ scenario.name }}
+        </button>
+        </li>
+    {% empty %}
+        <li class="text-sm text-gray-500">No matching scenarios found.</li>
+    {% endfor %}
+</ul>
