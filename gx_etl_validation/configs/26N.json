@@ -1,0 +1,29 @@
+{
+    "expectations": [
+        {
+            "expectation_type": "expect_table_columns_to_match_set",
+            "kwargs": {
+                "column_set": [
+                    "timestep",
+                    "outstandingBalance_",
+                    "interest_",
+                    "default_",
+                    "prepayment_",
+                    "totalPrincipalPaid_",
+                    "totalCF_"
+                ],
+                "exact_match": true
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_not_be_null",
+            "kwargs": {
+                "column": "timestep"
+            }
+        }
+    ],
+    "custom_checks": [
+        "check_timestep_monotonic",
+        "check_interest_reasonable_range"
+    ]
+}

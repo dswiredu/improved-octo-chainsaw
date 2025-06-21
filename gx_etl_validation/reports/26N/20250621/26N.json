@@ -1,0 +1,90 @@
+{
+  "success": true,
+  "results": [
+    {
+      "success": true,
+      "expectation_config": {
+        "expectation_type": "expect_table_columns_to_match_set",
+        "kwargs": {
+          "column_set": [
+            "timestep",
+            "outstandingBalance_",
+            "interest_",
+            "default_",
+            "prepayment_",
+            "totalPrincipalPaid_",
+            "totalCF_"
+          ],
+          "exact_match": true,
+          "result_format": "SUMMARY"
+        },
+        "meta": {}
+      },
+      "result": {
+        "observed_value": [
+          "timestep",
+          "outstandingBalance_",
+          "interest_",
+          "default_",
+          "prepayment_",
+          "totalPrincipalPaid_",
+          "totalCF_"
+        ]
+      },
+      "meta": {},
+      "exception_info": {
+        "raised_exception": false,
+        "exception_message": null,
+        "exception_traceback": null
+      }
+    },
+    {
+      "success": true,
+      "expectation_config": {
+        "expectation_type": "expect_column_values_to_not_be_null",
+        "kwargs": {
+          "column": "timestep",
+          "result_format": "SUMMARY"
+        },
+        "meta": {}
+      },
+      "result": {
+        "element_count": 361,
+        "unexpected_count": 0,
+        "unexpected_percent": 0.0,
+        "unexpected_percent_total": 0.0,
+        "partial_unexpected_list": []
+      },
+      "meta": {},
+      "exception_info": {
+        "raised_exception": false,
+        "exception_message": null,
+        "exception_traceback": null
+      }
+    }
+  ],
+  "evaluation_parameters": {},
+  "statistics": {
+    "evaluated_expectations": 2,
+    "successful_expectations": 2,
+    "unsuccessful_expectations": 0,
+    "success_percent": 100.0
+  },
+  "meta": {
+    "great_expectations_version": "0.18.22",
+    "expectation_suite_name": "26N_suite",
+    "run_id": {
+      "run_name": null,
+      "run_time": "2025-06-21T15:19:10.036906-04:00"
+    },
+    "batch_kwargs": {
+      "ge_batch_id": "9a4a4713-4ed4-11f0-bfd8-7015fb1cd454"
+    },
+    "batch_markers": {},
+    "batch_parameters": {},
+    "validation_time": "20250621T191910.036906Z",
+    "expectation_suite_meta": {
+      "great_expectations_version": "0.18.22"
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+    "expectations": [
+        {
+            "expectation_type": "expect_table_columns_to_match_set",
+            "kwargs": {
+                "column_set": [
+                    "timestep",
+                    "CPR",
+                    "CDR",
+                    "SEVERITY"
+                ],
+                "exact_match": true
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_not_be_null",
+            "kwargs": {
+                "column": "timestep"
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_not_be_null",
+            "kwargs": {
+                "column": "CPR"
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_not_be_null",
+            "kwargs": {
+                "column": "CDR"
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_not_be_null",
+            "kwargs": {
+                "column": "SEVERITY"
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_be_between",
+            "kwargs": {
+                "column": "CPR",
+                "min_value": 0,
+                "max_value": 1
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_be_between",
+            "kwargs": {
+                "column": "CDR",
+                "min_value": 0,
+                "max_value": 1
+            }
+        },
+        {
+            "expectation_type": "expect_column_values_to_be_between",
+            "kwargs": {
+                "column": "SEVERITY",
+                "min_value": 0,
+                "max_value": 1,
+                "mostly": 0.95
+            }
+        }
+    ],
+    "custom_checks": []
+}
