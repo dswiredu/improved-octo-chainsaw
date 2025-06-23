@@ -20,7 +20,17 @@
             "kwargs": {
                 "column": "timestep"
             }
+        },
+        {
+    "expectation_type": "expect_column_values_to_be_between",
+        "kwargs": {
+            "column": "interest_",
+            "min_value": 1,
+            "max_value": 490000,
+            "strict_min": false,
+            "strict_max": false
         }
+    }
     ],
     "custom_checks": [
         "check_timestep_monotonic",

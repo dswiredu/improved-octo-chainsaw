@@ -3,8 +3,6 @@ validate_minimal.py  –  bare-bones Great Expectations 0.18.x
 • No DataContext / YAML.  Just DataFrame + JSON expectations.
 • Outputs JSON reports to reports/<YYYYMMDD>/<name>.json
 -------------------------------------------------------------"""
-
-from __future__ import annotations
 import json, datetime
 from pathlib import Path
 import pandas as pd
@@ -30,12 +28,12 @@ def suite_from_json(name: str, json_path: Path) -> ExpectationSuite:
     return suite
 
 # ─────────── minimal validation loop ───────────
-NAMES = ["26N", "BlueOwl"]                  # add names freely
+NAMES = ["26N"]                  # add names freely
 RUN_DATE = datetime.datetime.now().strftime("%Y%m%d")
 
 
 for name in NAMES:
-    REPORT_DIR = Path("reports") / name / RUN_DATE
+    REPORT_DIR = Path("reports_minimal") / name / RUN_DATE
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     cfg_path = Path("configs") / f"{name}.json"
     if not cfg_path.exists():
