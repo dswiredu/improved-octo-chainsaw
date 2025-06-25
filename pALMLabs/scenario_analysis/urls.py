@@ -21,4 +21,5 @@ urlpatterns = [
         "add-scenario-to-pill/", views.add_scenario_to_pill, name="add_scenario_to_pill"
     ),
     path("add-column-to-pill/", views.add_column_to_pill, name="add_column_to_pill"),
+    path("update-line-chart/", views.update_line_chart, name="update-line-chart"),
 ]

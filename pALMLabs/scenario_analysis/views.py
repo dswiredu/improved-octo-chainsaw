@@ -5,9 +5,13 @@ from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_GET, require_POST
+import pandas as pd
+import plotly.graph_objs as go
+from plotly.offline import plot
+from uuid import UUID
 
 from .forms import ScenarioUploadForm
-from .models import ScenarioDataSet
+from .models import ScenarioDataSet, ScenarioValue
 from .services import parse_mapping_file, process_scenario_file
 
 
@@ -118,7 +122,7 @@ from django.shortcuts import render
 
 
 @login_required
-def compare_scenarios(request):
+def compare_scenarios(request) -> HttpResponse:
     """
     Renders the main Compare Scenarios page with two-level autocomplete.
     """
@@ -154,13 +158,38 @@ def compare_scenarios(request):
 
     # Selected column names (from GET request)
     selected_column_names = request.GET.getlist("selected_column_names")
+    single_selected_column = request.GET.get(
+        "single-selected-culumn",
+        selected_column_names[0] if selected_column_names else None
+        )
+    
+    print(selected_scenarios, selected_column_names, single_selected_column, sep=" | ")
+
+    if selected_column_names:
+        qs = ScenarioValue.objects.filter(
+                variable=single_selected_column,
+                dataset_id__in=selected_scenarios,
+            ).select_related("dataset")
+    
+        df = pd.DataFrame.from_records(
+            qs.values("dataset__name", "timestep", "value")
+            ).rename(columns={"dataset__name": "dataset"})
+        
+        df.drop_duplicates(subset=["dataset", "timestep"], keep="first", inplace=True)
+        
+        df_pivot = df.pivot(index="timestep", columns="dataset", values="value").sort_index()
+        chart_html = generate_chart_html(df_pivot)
+    else:
+        chart_html = None
 
     context = {
+        "line_chart": chart_html,
         "all_scenarios": all_scenarios,
         "all_columns": all_columns,
         "selected_scenario_ids": selected_scenario_ids,
         "selected_scenarios": selected_scenarios,
         "selected_column_names": selected_column_names,
+        "single_selected_column": single_selected_column,
     }
 
     return render(request, "scenario_analysis/compare_scenarios.html", context)
@@ -168,7 +197,7 @@ def compare_scenarios(request):
 
 @login_required
 @require_GET
-def search_scenarios(request):
+def search_scenarios(request) -> HttpResponse:
     """
     HTMX view to return filtered scenario names based on input text.
     Only scenarios with status='done' and owned by the user are shown.
@@ -191,7 +220,7 @@ def search_scenarios(request):
 
 @login_required
 @require_GET
-def search_columns(request):
+def search_columns(request) -> HttpResponse:
     """
     HTMX view to return column names based on selected scenarios.
     """
@@ -218,12 +247,9 @@ def search_columns(request):
     )
 
 
-from uuid import UUID
-
-
 @require_POST
 @login_required
-def add_scenario_to_pill(request):
+def add_scenario_to_pill(request) -> HttpResponse:
     """
     Renders all selected scenarios as pills.
     Expects GET param: scenario_ids (UUID list)
@@ -246,7 +272,7 @@ def add_scenario_to_pill(request):
 
 @login_required
 @require_GET
-def add_column_to_pill(request):
+def add_column_to_pill(request) -> HttpResponse:
     """
     Renders all selected columns as pills.
     Expects GET param: column_names (string list)
@@ -260,3 +286,55 @@ def add_column_to_pill(request):
             "columns": column_names,
         },
     )
+
+@login_required
+def update_line_chart(request) -> HttpResponse:
+    selected_column   = request.GET.get("single-selected-column")
+    selected_scenarios = request.GET.getlist("selected_scenario_ids")
+
+    if not selected_column or not selected_scenarios:
+        return HttpResponse("<p class='text-center text-gray-500'>No data selected.</p>")
+
+    qs = ScenarioValue.objects.filter(
+        variable=selected_column,
+        dataset_id__in=selected_scenarios
+    ).select_related("dataset")
+
+    df = (
+        pd.DataFrame.from_records(
+            qs.values("dataset__name", "timestep", "value")
+        )
+        .rename(columns={"dataset__name": "dataset"})
+        .drop_duplicates(subset=["dataset", "timestep"], keep="first")
+    )
+
+    if df.empty:
+        return HttpResponse("<p class='text-center text-gray-500'>No data to plot.</p>")
+
+    pivot = (
+        df.pivot(index="timestep", columns="dataset", values="value").sort_index()
+    )
+
+    return HttpResponse(generate_chart_html(pivot))
+
+
+
+def generate_chart_html(df):
+    fig = go.Figure()
+
+    for scenario in df.columns:
+        fig.add_trace(go.Scatter(
+            x=df.index, y=df[scenario],
+            mode="lines", name=scenario
+        ))
+
+    fig.update_layout(
+        title="Scenario Comparison",
+        xaxis_title="Timestep",
+        yaxis_title="Value",
+        template="plotly_white",
+        autosize=True,          # let Plotly fill width
+        height=500,
+        margin=dict(l=40, r=20, t=40, b=40),
+    )
+    return fig.to_html(full_html=False)

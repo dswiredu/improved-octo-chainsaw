@@ -1,68 +1,114 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div>
-    <div class="mt-4 max-w-4xl mx-auto p-6 bg-white rounded-xl">
+    <div>
+        <div class="mt-4 max-w-4xl mx-auto p-6 bg-white rounded-xl">
         <!-- Title -->
-        <h2 class="text-3xl font-bold mb-8 flex items-center gap-3 text-gray-800">
-            <i class="fas fa-sliders-h text-xl"></i>
-            Compare Scenarios
-        </h2>
+            <h2 class="text-3xl font-bold mb-8 flex items-center gap-3 text-gray-800">
+                <i class="fas fa-sliders-h text-xl"></i>
+                Compare Scenarios
+            </h2>
 
         <!-- Scenario Selection Form -->
-        <form method="get" action="{% url 'scenario_analysis:compare-scenarios' %}" class="space-y-8">
-            
+            <form method="get" action="{% url 'scenario_analysis:compare-scenarios' %}" class="space-y-8">
+
             <!-- Select Scenarios -->
-            <div>
-                <label for="scenario_select" class="block text-sm font-medium text-gray-700 mb-2">
-                    Select Scenarios
-                </label>
-                <select
-                    id="scenario_select"
-                    name="selected_scenario_ids"
-                    class="choices-select w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                    multiple
-                    placeholder="Select one or more scenarios"
-                >
-                    {% for scenario in all_scenarios %}
-                        <option value="{{ scenario.id }}" {% if scenario.id|stringformat:"s" in selected_scenario_ids %}selected{% endif %}>
-                            {{ scenario.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
+                <div>
+                    <label for="scenario_select" class="block text-sm font-medium text-gray-700 mb-2">
+                        Select Scenarios
+                    </label>
+                    <select
+                        id="scenario_select"
+                        name="selected_scenario_ids"
+                        class="choices-select w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        multiple
+                        placeholder="Select one or more scenarios"
+                    >
+                        {% for scenario in all_scenarios %}
+                            <option value="{{ scenario.id }}" {% if scenario.id|stringformat:"s" in selected_scenario_ids %}selected{% endif %}>
+                                {{ scenario.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
             <!-- Select Columns -->
-            <div>
-                <label for="column_select" class="block text-sm font-medium text-gray-700 mb-2">
-                    Select Columns
-                </label>
+                <div>
+                    <label for="column_select" class="block text-sm font-medium text-gray-700 mb-2">
+                        Select Columns
+                    </label>
+                    <select
+                        id="column_select"
+                        name="selected_column_names"
+                        class="choices-select w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        multiple
+                        placeholder="Select columns to compare"
+                    >
+                        {% for col in all_columns %}
+                            <option value="{{ col }}" {% if col in selected_column_names %}selected{% endif %}>
+                                {{ col }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+            <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit"
+                            class="btn md:w-auto bg-gray-900 text-white shadow hover:bg-gray-600">
+                        Submit
+                    </button>
+                </div>
+            </form>
+
+        </div>
+        <div class="divider">Results</div>
+
+    <!-- Variable selector -->
+        <div class="mb-4">
+            <label for="single-selected-column"
+                   class="block mb-1 font-medium text-gray-700">
+                Select Variable to Plot
+            </label>
+
+        <!-- width is fixed for the select ONLY (w-72 ≈ 18 rem) -->
+            <div class="relative w-72">
                 <select
-                    id="column_select"
-                    name="selected_column_names"
-                    class="choices-select w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                    multiple
-                    placeholder="Select columns to compare"
+                    id="single-selected-column"
+                    name="single-selected-column"
+                    class="appearance-none w-full p-2 pr-10 text-gray-800 font-semibold rounded-md border border-gray-300 shadow-sm"
+                    hx-get="{% url 'scenario_analysis:update-line-chart' %}"
+                    hx-trigger="change"
+                    hx-target="#line-chart-container"
+                    hx-swap="innerHTML"
+                    hx-include="#scenario_select"
                 >
-                    {% for col in all_columns %}
-                        <option value="{{ col }}" {% if col in selected_column_names %}selected{% endif %}>
+                    {% for col in selected_column_names %}
+                        <option value="{{ col }}"
+                                {% if col == single_selected_column %}selected{% endif %}>
                             {{ col }}
                         </option>
                     {% endfor %}
                 </select>
-            </div>
 
-            <!-- Submit Button -->
-            <div class="pt-4">
-                <button type="submit"
-                    class="btn md:w-auto bg-gray-900 text-white shadow hover:bg-gray-600">
-                    Submit
-                </button>
+            <!-- caret icon -->
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-5 w-5 text-gray-700"
+                         viewBox="0 0 20 20"
+                         fill="currentColor">
+                        <path fill-rule="evenodd"
+                              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                              clip-rule="evenodd" />
+                    </svg>
+                </div>
             </div>
-        </form>
-    
+        </div>
+
+    <!-- Chart -->
+        <div id="line-chart-container"
+             class="bg-white p-4 rounded-lg shadow w-full overflow-x-auto min-h-[550px]">
+            {{ line_chart|safe }}
+        </div>
     </div>
-    <div class="divider">Results</div>
-</div>
-
 {% endblock %}

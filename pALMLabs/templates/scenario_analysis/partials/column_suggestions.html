@@ -1,16 +1,16 @@
 <ul class="mt-2">
     {% for col in columns %}
         <li>
-        <button
-            type="button"
-            class="btn btn-sm btn-outline btn-success w-full text-left mb-1"
-            hx-post="{% url 'scenario_analysis:add_column_to_pill' %}"
-            hx-vals='{"column_name": "{{ col }}"}'
-            hx-target="#selected-columns"
-            hx-swap="beforeend"
-        >
-            {{ col }}
-        </button>
+            <button
+                type="button"
+                class="btn btn-sm btn-outline btn-success w-full text-left mb-1"
+                hx-post="{% url 'scenario_analysis:add_column_to_pill' %}"
+                hx-vals='{"column_name": "{{ col }}"}'
+                hx-target="#selected-columns"
+                hx-swap="beforeend"
+            >
+                {{ col }}
+            </button>
         </li>
     {% empty %}
         <li class="text-sm text-gray-500">No matching columns found.</li>

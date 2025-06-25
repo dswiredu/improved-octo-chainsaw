@@ -6,3 +6,4 @@ xlsxwriter==3.2.3
 bokeh==3.7.2
 pALMpy==0.0.2
 django-allauth==65.8.1
+plotly
