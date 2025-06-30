@@ -1,0 +1,5 @@
+-r requirements-dev.txt
+pandas==2.2.3
+django==5.2.1
+python-dotenv==1.1.0
+plotly[express]

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="flex justify-between items-center mb-6 mt-6">
+        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+            <i class="fas fa-eye text-gray-500"></i>
+            Overview
+        </h2>
+
+        <form method="get" action="">
+            <label class="form-control w-[220px]">
+                <div class="label mb-1">
+                    <span class="label-text font-semibold text-sm text-gray-700">Select Date</span>
+                </div>
+                <div class="relative">
+                    <input
+                        type="date"
+                        name="date"
+                        value="{{ date_str }}"
+                        class="input border-[2px] border-gray-300 shadow rounded-md pl-10 w-full"
+                        onchange="this.form.submit()"
+                    />
+                </div>
+            </label>
+        </form>
+    </div>
+
+    <!-- Card Row -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6 px-10">
+        {% for card in stats_cards %}
+            {% include "components/stat_card.html" with title=card.title icon=card.icon value=card.value subtext=card.subtext delta=card.delta %}
+        {% endfor %}
+    </div>
+
+    <div class="card bg-base-100 shadow-xl mt-6">
+        <div class="card-body">
+            <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                Row-level: Test Results
+            </h3>
+            <div class="overflow-x-auto">
+                {{ bar_chart_html|safe }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

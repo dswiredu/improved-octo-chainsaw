@@ -1,0 +1,59 @@
+{% load custom_filters %}
+
+<div class="stat bg-base-100 shadow-md rounded-lg">
+    <div class="stat-figure text-gray-500">
+        <i class="fas {{ icon }} text-2xl"></i>
+    </div>
+
+    <div class="stat-title text-base font-bold text-gray-700">{{ title }}</div>
+
+    {% if "%" in value %}
+        {% with value|cut:"%"|floatval as pct %}
+            {% if pct < 50 %}
+                <div class="stat-value text-xl font-bold text-error">{{ value }}</div>
+            {% elif pct < 90 %}
+                <div class="stat-value text-xl font-bold text-warning">{{ value }}</div>
+            {% else %}
+                <div class="stat-value text-xl font-bold text-success">{{ value }}</div>
+            {% endif %}
+        {% endwith %}
+    {% else %}
+        <div class="stat-value text-xl font-bold text-gray-800">{{ value }}</div>
+    {% endif %}
+
+    <div class="flex flex-col">
+        {% if delta is not None %}
+            {% with delta|floatval as pct %}
+                {% if title == "Passed Checks" %}
+                    {% if pct > 0 %}
+                        <div class="text-success text-sm font-semibold">
+                            <i class="fas fa-arrow-up mr-1"></i>{{ pct }}%
+                        </div>
+                    {% elif pct < 0 %}
+                        <div class="text-error text-sm font-semibold">
+                            <i class="fas fa-arrow-down mr-1"></i>{{ pct|abs }}%
+                        </div>
+                    {% endif %}
+                    <div class="text-xs text-gray-500 mt-1">since last run</div>
+                {% elif title == "Failed Checks" %}
+                    {% if pct > 0 %}
+                        <div class="text-error text-sm font-semibold">
+                            <i class="fas fa-arrow-up mr-1"></i>{{ pct }}%
+                        </div>
+                    {% elif pct < 0 %}
+                        <div class="text-success text-sm font-semibold">
+                            <i class="fas fa-arrow-down mr-1"></i>{{ pct|abs }}%
+                        </div>
+                    {% endif %}
+                    <div class="text-xs text-gray-500 mt-1">since last run</div>
+                {% else %}
+                    {% if subtext %}
+                        <div class="stat-desc text-sm text-gray-600">{{ subtext }}</div>
+                    {% endif %}
+                {% endif %}
+            {% endwith %}
+        {% elif subtext %}
+            <div class="stat-desc text-sm text-gray-600">{{ subtext }}</div>
+        {% endif %}
+    </div>
+</div>

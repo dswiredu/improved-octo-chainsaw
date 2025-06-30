@@ -1,0 +1,6 @@
+{% for message in messages %}
+  <div class="alert alert-{{ message.tags|default:"info" }} shadow-md rounded-lg p-4 mb-4 w-full max-w-xs">
+    <span class="text-sm">{{ message }}</span>
+    <button onclick="this.parentElement.remove()" class="ml-auto text-lg font-bold text-gray-600 hover:text-gray-800">&times;</button>
+  </div>
+{% endfor %}
