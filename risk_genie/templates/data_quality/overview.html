@@ -10,15 +10,29 @@
         <form method="get" action="">
             <label class="form-control w-[220px]">
                 <div class="label mb-1">
-                    <span class="label-text font-semibold text-sm text-gray-700">Select Date</span>
+                    <span class="label-text font-semibold text-sm text-gray-900">Select Date</span>
                 </div>
+
                 <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fa-regular fa-calendar text-gray-900"></i>
+                    </div>
+
                     <input
-                        type="date"
+                        type="text"
                         name="date"
                         value="{{ date_str }}"
-                        class="input border-[2px] border-gray-300 shadow rounded-md pl-10 w-full"
-                        onchange="this.form.submit()"
+                        readonly
+                        datepicker              
+                        datepicker-title="My datepicker"
+                        datepicker-autohide
+                        datepicker-format="yyyy-mm-dd"
+                        datepicker-button="true"
+                        datepicker-min-date="{{ min_date }}"
+                        datepicker-max-date="{{ max_date }}"
+                        class="input border-[1px] border-gray-300 shadow rounded-md pl-10 w-full
+                            bg-white text-gray-700 cursor-pointer
+                            focus:outline-none focus:ring-0 focus:border-gray-400"
                     />
                 </div>
             </label>
@@ -32,7 +46,7 @@
         {% endfor %}
     </div>
 
-    <div class="card bg-base-100 shadow-xl mt-6">
+    <div class="card bg-white shadow-xl mt-6">
         <div class="card-body">
             <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
                 Row-level: Test Results

@@ -81,7 +81,9 @@ def overview(request: HttpRequest):
     bar_chart_html = build_plotly_bar(df)
 
     context = {
+        "min_date" : "2025-06-10",
         "date_str": date_str,
+        "max_date": "2025-06-30",
         "run_date": run_date,
         "stats_cards": stats_cards,
         "results": data["results"],
