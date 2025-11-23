@@ -4,3 +4,4 @@ pandas>=2.0
 python-dotenv>=1.0
 click==8.2.1
 sqlalchemy-utils==0.41.2
+alembic==1.16.4

@@ -1,10 +1,8 @@
-from typing import Any
-
-from sqlalchemy import create_engine, inspect, text, MetaData, Table
-from sqlalchemy.dialects.mysql import insert as mysql_insert
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.engine import Engine
 from urllib.parse import quote_plus
 import pandas as pd
+
 from connectors.filtering import build_filters
 
 
@@ -18,9 +16,6 @@ class MySQLDataSource:
         self.password = password
         self.port = port
         self._engine = self._create_engine()
-
-        # cache per-table compiled statement so reflection happens only once
-        self._upsert_cache: dict[str, tuple[Table, Any]] = {}
 
     def _create_engine(self) -> Engine:
         return create_engine(self.dsn, pool_pre_ping=True)
@@ -44,54 +39,6 @@ class MySQLDataSource:
             params = {}
         return pd.read_sql(query, self.engine, params=params)
 
-    def upsert_records(
-        self,
-        df: pd.DataFrame,
-        table_name: str,
-        chunksize: int = 5000,
-        update_cols: list[str] | None = None,  # None = all non-PK/unique
-    ) -> None:
-        """
-        Insert OR update rows based on the table's PK / UNIQUE keys.
-
-        Parameters
-        ----------
-        df : pandas.DataFrame
-        table_name : str
-        chunksize : int
-            How many rows per executemany batch.
-        update_cols : List[str] | None
-            Explicit list of columns to update when a duplicate key hits.
-            Default (=None) updates every column except PKs / UNIQUE cols.
-        """
-        if df.empty:
-            return
-
-        cache_key = f"{self.dbname}.{table_name}"
-        if cache_key not in self._upsert_cache:
-            meta = MetaData()
-            target = Table(table_name, meta, autoload_with=self._engine, autoload=True)
-
-            if update_cols is None:
-                # all columns except PKs or UNIQUE → update
-                skip = {c.name for c in target.primary_key.columns if c.name}
-                skip |= {c.name for c in target.columns if c.unique}
-                update_cols = [c.name for c in target.columns if c.name not in skip]
-
-            ins = mysql_insert(target)
-            upd_map = {col: ins.inserted[col] for col in update_cols}
-            compiled = ins.on_duplicate_key_update(**upd_map)
-
-            self._upsert_cache[cache_key] = (target, compiled)
-
-        target, ondup_stmt = self._upsert_cache[cache_key]
-
-        records = df.to_dict(orient="records")
-        with self._engine.begin() as conn:  # single txn
-            for start in range(0, len(records), chunksize):
-                chunk = records[start : start + chunksize]  # view, no copy
-                conn.execute(ondup_stmt, chunk)
-
     def run_query(self, sql: str, params: dict = None) -> pd.DataFrame:
         return pd.read_sql(text(sql), self.engine, params=params)
 
@@ -113,7 +60,7 @@ class MySQLDataSource:
         if_exists: str = "replace",
         dtype: dict = None,
         chunksize: int = 5000,
-    ) -> None:
+    ):
 
         df.to_sql(
             table_name,
@@ -153,7 +100,7 @@ class MySQLDataSource:
         schema: dict,
         primary_key: str = None,
         if_not_exists: bool = True,
-    ) -> None:
+    ):
         """
         Create a table explicitly from a schema dictionary.
 

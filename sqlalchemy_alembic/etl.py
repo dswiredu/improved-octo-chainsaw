@@ -1,5 +1,5 @@
 import click
-from database import db_cli
+from database.db import db
 
 
 def _load_config() -> dict[str, list[str]]:
@@ -7,7 +7,7 @@ def _load_config() -> dict[str, list[str]]:
     Reads client_config.csv *once* and returns:
         {"aebe_isa": ["26n", "himco", "nlg"], ... }
     """
-    config = {{"aebe_isa": ["26n", "himco", "nlg"]}}
+    config = {"aebe_isa": ["26n", "himco", "nlg"]}
     return config
 
 
@@ -19,7 +19,7 @@ def cli(ctx) -> None:
 
 
 # mount sub-commands
-cli.add_command(db_cli)
+cli.add_command(db)
 
 if __name__ == "__main__":
     cli()

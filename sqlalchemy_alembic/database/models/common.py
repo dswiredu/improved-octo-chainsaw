@@ -32,6 +32,7 @@ class Country(TimeStampMixin, Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(60), unique=True, nullable=False)
+    long_name: Mapped[str] = mapped_column(String(90), unique=True, nullable=False)
 
 
 class AssetClass(TimeStampMixin, Base):
@@ -98,10 +99,8 @@ class Instrument(TimeStampMixin, Base):
     name: Mapped[str] = mapped_column(String(120))
 
     # ← CHANGED: keep as numeric so you can do maths later
-    unit_of_measure: Mapped[Decimal] = mapped_column(
-        Numeric(10, 4),  # 9999.9999 max
-        default=Decimal("1.0"),
-    )
+    quantity = Column(Integer)
+    unit_of_measure: Mapped[SmallInteger] = mapped_column(SmallInteger)
     rating_id: Mapped[int] = mapped_column(ForeignKey("rating.id"))
     industry_id: Mapped[int] = mapped_column(ForeignKey("industry.id"))
     asset_class_id: Mapped[int] = mapped_column(ForeignKey("asset_class.id"))
@@ -113,12 +112,12 @@ class Instrument(TimeStampMixin, Base):
     country = relationship("Country")
 
 
-class PositionBronze(TimeStampMixin, Base):
+class PositionSilver(TimeStampMixin, Base):
     """
     Raw position rows exactly as the file comes in.
     """
 
-    __tablename__ = "position_silver"
+    __tablename__ = "positions_silver"
 
     pos_date: Mapped[date] = mapped_column(Date, nullable=False)  # ← YYYY-MM-DD
     portfolio_id: Mapped[int] = mapped_column(
@@ -132,6 +131,28 @@ class PositionBronze(TimeStampMixin, Base):
 
     portfolio = relationship("Portfolio")
     instrument = relationship("Instrument")
+
+    __table_args__ = (
+        PrimaryKeyConstraint(
+            "portfolio_id", "instrument_id", "pos_date", name="pk_bronze"
+        ),
+        Index("ix_bronze_portfolio_date", "portfolio_id", "pos_date"),
+    )
+
+
+class PositionBronze(TimeStampMixin, Base):
+    """
+    Raw position rows exactly as the file comes in.
+    """
+
+    __tablename__ = "positions_bronze"
+
+    pos_date: Mapped[date] = mapped_column(Date, nullable=False)  # ← YYYY-MM-DD
+    portfolio_id: Mapped[str] = mapped_column(String(30))
+    instrument_id: Mapped[str] = mapped_column(String(30))
+    quantity: Mapped[Decimal] = mapped_column(Numeric(20, 4), default=Decimal(0))
+    mv: Mapped[Integer] = mapped_column(SmallInteger, default=Decimal(0))
+    book_v
 
     __table_args__ = (
         PrimaryKeyConstraint(
