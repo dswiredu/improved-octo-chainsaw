@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- PAGE TITLE -->
+<div class="px-6 py-4">
+    <div class="flex items-center gap-3">
+        <i class="fa-solid fa-explosion text-2xl text-gray-900"></i>
+        <h1 class="text-2xl font-bold text-gray-900">
+            Ground Vibration Modelling
+        </h1>
+    </div>
+</div>
+
+<!-- MAIN CONTENT AREA -->
+<div class="flex gap-6 p-6 w-full">
+
+    <!-- LEFT INPUT PANEL -->
+    <div class="bg-base-100 border border-base-300 shadow-sm rounded-xl p-6 flex-none
+                w-[340px] min-h-[360px]">
+
+        <h2 class="text-lg font-bold mb-6">Model Inputs</h2>
+
+        <!-- Distance Input -->
+        <div class="mb-5">
+            <label class="label pb-1">
+                <span class="label-text font-semibold">Distance from Blast (D)</span>
+            </label>
+            <input type="number" step="0.01" min="0"
+                   class="input input-bordered w-full" />
+        </div>
+
+        <!-- Weight Input -->
+        <div class="mb-5">
+            <label class="label pb-1">
+                <span class="label-text font-semibold">Charge Weight (W)</span>
+            </label>
+            <input type="number" step="0.01" min="0"
+                   class="input input-bordered w-full" />
+        </div>
+
+        <!-- Model Dropdown -->
+        <div class="mb-6">
+            <label class="label pb-1">
+                <span class="label-text font-semibold">Select Model</span>
+            </label>
+            <select class="select select-bordered w-full">
+                {% for model in models %}
+                    <option value="{{ model }}">{{ model }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Submit Button -->
+        <button class="btn w-full bg-gray-900 text-white hover:bg-gray-800">
+            Generate Graph
+        </button>
+
+    </div>
+
+    <!-- RIGHT GRAPH PANEL -->
+    <div class="bg-base-100 border border-base-300 shadow-sm rounded-xl p-6 flex-1
+                min-h-[650px]">
+
+        <!-- HTMX Graph Placeholder -->
+        <div id="graph-container"
+             class="w-full h-full flex items-center justify-center text-gray-400">
+            <span class="italic">Graph will appear here...</span>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

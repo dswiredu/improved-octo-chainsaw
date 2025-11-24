@@ -1,0 +1,44 @@
+<!-- partials/_nav_search.html -->
+<div class="navbar bg-white border border-solid shadow-md fixed top-0 left-0 right-0 z-50">
+    <!-- 1) App name / logo -->
+    <div class="px-4">
+        <a class="text-2xl font-bold tracking-tight text-gray-900 font-sans" href="/">
+            Blast<span class="text-blue-600">IQ</span>
+        </a>
+    </div>
+
+    <div class="divider divider-horizontal"></div>
+
+    <!-- 2) Search bar -->
+    <div class="flex-1 px-4 mx-4">
+        <input
+            type="text"
+            placeholder="Search"
+            class="input w-full bg-white cursor-text focus:outline-none focus:ring-0 focus:border-transparent"
+        />
+    </div>
+
+    <div class="divider divider-horizontal"></div>
+
+    <!-- 3) Avatar dropdown shown only if logged in -->
+    {% if user.is_authenticated %}
+        <div class="px-4 dropdown dropdown-end">
+            <div tabindex="0" role="button" class="avatar btn btn-ghost btn-circle">
+                <div class="w-10 rounded-full">
+                    <img
+                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                        alt="User Avatar"
+                    />
+                </div>
+            </div>
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-white rounded-box w-52">
+                <form method="POST" action="{% url 'account_logout' %}">
+                    {% csrf_token %}
+                    <li>
+                        <button type="submit" class="w-full text-left">Log Out</button>
+                    </li>
+                </form>
+            </ul>
+        </div>
+    {% endif %}
+</div>
