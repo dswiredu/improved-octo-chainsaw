@@ -30,18 +30,14 @@
             [x-cloak] { display: none !important; }
         </style>
 
-    <!-- Bokeh (for rendering sparklines and charts) -->
-        <link rel="stylesheet" href="https://cdn.bokeh.org/bokeh/release/bokeh-3.7.2.min.css">
-        <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.7.2.min.js"></script>
-
     <!-- Grid.js CSS -->
         <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
 
     <!-- Grid.js JS -->
         <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
-
-    <!--Plotly-->
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    
+    <!--Echarts-->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
 
     <!-- Choices.js -->
         <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js" defer></script>
@@ -68,6 +64,7 @@
         {% block scripts %}
             <!-- Dont forget to add {{ block.super }} in any child scripts before writing them. -->
             <script src="{% static 'js/csrf_setup.js' %}" defer></script>
+            <script src="{% static 'js/echarts_init.js' %}"></script>
         {% endblock %}
     </body>
 </html>

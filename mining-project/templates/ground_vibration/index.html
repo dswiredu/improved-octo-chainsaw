@@ -12,7 +12,7 @@
         </div>
     </div>
 
-<!-- MAIN CONTENT AREA -->
+    <!-- MAIN CONTENT AREA -->
     <div class="flex gap-6 p-6 w-full items-stretch">
 
         <!-- LEFT INPUT PANEL -->
@@ -88,19 +88,32 @@
             </div>
 
             <!-- GRAPH AREA -->
-            <div class="bg-white p-6 flex-1 flex">
+            <div class="bg-white p-6 flex-1 flex flex-col">
                 <div id="plot-container" class="w-full h-full relative">
-                    {% if plot_html %}
-                        {{ plot_html|safe }}
+                    {% if options_json %}
+                        <div id="ppv-chart" class="h-full w-full"></div>
                     {% else %}
                         <div class="absolute inset-0 flex items-center justify-center">
-                            <p class="text-gray-400">Graph will appear here…</p>
+                            <p class="text-gray-400">Provide inputs and Graph will appear here...</p>
                         </div>
                     {% endif %}
                 </div>
             </div>
-
         </div>
 
     </div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+
+    {% if options_json %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const options = {{ options_json|safe }};
+                window.renderEChart("ppv-chart", options);
+            });
+        </script>
+    {% endif %}
 {% endblock %}

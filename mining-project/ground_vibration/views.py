@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponseBadRequest
 from django.utils import timezone
-from .utils.plotting import build_ppv_plot
+from .utils.plotting import build_ppv_chart_options
 from core.utils.exporter import export_df_to_excel
 
 
@@ -93,7 +93,6 @@ def index(request):
 
         return redirect("ground-vibration-index")
 
-
     # --------------------------
     # GET → load existing state
     # --------------------------
@@ -104,12 +103,13 @@ def index(request):
     df = None
     if request.session.get("gv_df"):
         json_str = request.session["gv_df"]
-        df = pd.read_json(StringIO(json_str))   # no renaming needed now
+        df = pd.read_json(StringIO(json_str))
 
-    plot_html = None
+    options_json = None
     if df is not None and distance is not None and weight is not None:
         weight_series = compute_weight_series(weight)
-        plot_html = build_ppv_plot(df, distance, weight, weight_series)
+        option = build_ppv_chart_options(df, distance, weight, weight_series)
+        options_json = json.dumps(option)
 
     context = {
         "models": models,
@@ -117,10 +117,11 @@ def index(request):
         "distance": distance,
         "weight": weight,
         "df": df,
-        "plot_html": plot_html,
+        "options_json": options_json,
     }
 
     return render(request, "ground_vibration/index.html", context)
+
 
 def export_excel(request):
     """
