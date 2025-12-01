@@ -25,6 +25,7 @@
             <form method="POST" action="">
                 {% csrf_token %}
 
+                <!-- Distance (D) -->
                 <div class="mb-5">
                     <label class="label pb-1">
                         <span class="label-text font-semibold">Distance from Blast (D)</span>
@@ -34,6 +35,7 @@
                         value="{{ distance|default:'' }}">
                 </div>
 
+                <!-- Charge Weight (W) -->
                 <div class="mb-5">
                     <label class="label pb-1">
                         <span class="label-text font-semibold">Charge Weight (W)</span>
@@ -43,20 +45,37 @@
                         value="{{ weight|default:'' }}">
                 </div>
 
-                <div class="mb-6">
+                <!-- Model Select -->
+                <div class="mb-4">
                     <label class="label pb-1">
                         <span class="label-text font-semibold">Select Model</span>
                     </label>
-                    <select name="model" class="select select-bordered w-full" required>
-                        {% for model in models %}
-                            <option value="{{ model }}"
-                                    {% if selected_model == model %}selected{% endif %}>
-                                {{ model }}
+
+                    <select name="model"
+                            class="select select-bordered w-full"
+                            hx-get="{% url 'load_model_form' %}"
+                            hx-trigger="change"
+                            hx-target="#model-form-container"
+                            required>
+                        <option value="">-- Choose Model --</option>
+
+                        {% for key, meta in model_registry.items %}
+                            <option value="{{ key }}"
+                                    {% if selected_model == key %}selected{% endif %}>
+                                {{ meta.label }}
                             </option>
                         {% endfor %}
                     </select>
                 </div>
 
+                <!-- MODEL-SPECIFIC INPUTS (Dynamically Inserted) -->
+                <div id="model-form-container">
+                    {% if model_form %}
+                        {% include "ground_vibration/partials/model_form.html" %}
+                    {% endif %}
+                </div>
+
+                <!-- Submit -->
                 <button class="btn w-full bg-gray-900 text-white hover:bg-gray-800">
                     Generate Graph
                 </button>

@@ -4,22 +4,32 @@ import json
 from io import StringIO
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse
 from django.utils import timezone
 from .utils.plotting import build_ppv_chart_options
 from core.utils.exporter import export_df_to_excel
+from .model_registry import MODEL_REGISTRY
 
+def load_model_form(request):
+    """
+    HTMX loader: returns the form fields for the selected PPV model.
+    """
+    model_key = request.GET.get("model")
+    if not model_key or model_key not in MODEL_REGISTRY:
+        return HttpResponse("")  # return empty placeholder
 
-# ---------------------------------------------------------
-# 1. Ghosh (1983) PPV Model
-# ---------------------------------------------------------
-def ghosh_ppv(D, W):
-    """
-    Computes PPV using:
-    PPV = 0.0134 * W^0.8179 * D^0.1788 * e^(-0.001 * D)
-    Vectorized: D may be a numpy array.
-    """
-    return 0.0134 * (W ** 0.8179) * (D ** 0.1788) * np.exp(-0.001 * D)
+    model_def = MODEL_REGISTRY[model_key]
+    form_class = model_def["form"]
+    form = form_class()
+
+    return render(
+        request,
+        "ground_vibration/partials/model_form.html",
+        {
+            "form": form,
+            "model_label": model_def["label"],
+        },
+    )
 
 
 # ---------------------------------------------------------
@@ -46,34 +56,29 @@ def compute_weight_series(W):
     candidates = [W - 100, W - 50, W, W + 50, W + 100]
     return [w for w in candidates if w > 0]
 
-
-# ---------------------------------------------------------
-# 4. Build DataFrame for plotting
-# ---------------------------------------------------------
-def compute_ppv_dataframe(D, W):
+def compute_ppv_dataframe_from_model(D, W, compute_fn, params):
     """
-    Build dataframe where:
-    - Index = distances
-    - Columns = string versions of centered weights (no 'kg' suffix)
+    Builds a PPV dataframe for the selected model.
+    Uses:
+        - distance range = D ± 200
+        - weight series = [W-100, W-50, W, W+50, W+100]
     """
     distances = compute_distance_range(D)
     weight_series = compute_weight_series(W)
 
     df = pd.DataFrame({"Distance": distances})
 
-    # Use pure string numeric column names (e.g. "150", "150.0", "445.5")
     for weight in weight_series:
-        df[str(weight)] = ghosh_ppv(distances, weight)
+        # Compute PPV curve: vectorized over distance array
+        ppv_values = compute_fn(distances, weight, **params)
+        df[str(weight)] = ppv_values
 
     return df, weight_series, distances
 
 
-# ---------------------------------------------------------
-# 5. Main View (GET + POST + Session persistence)
-# ---------------------------------------------------------
+
 @require_http_methods(["GET", "POST"])
 def index(request):
-    models = ["Ghosh (1983)"]
 
     # --------------------------
     # POST → compute & persist
@@ -83,44 +88,84 @@ def index(request):
         weight = float(request.POST.get("weight"))
         selected_model = request.POST.get("model")
 
-        df, weight_series, dist_series = compute_ppv_dataframe(distance, weight)
+        # Validate model key
+        if selected_model not in MODEL_REGISTRY:
+            return HttpResponseBadRequest("Invalid model selected.")
 
-        # Persist full numeric dataframe to session
+        model_def = MODEL_REGISTRY[selected_model]
+        form_class = model_def["form"]
+        compute_fn = model_def["compute"]
+
+        # Validate model-specific fields
+        model_form = form_class(request.POST)
+        if not model_form.is_valid():
+            # render page with model_form errors + base inputs
+            return render(
+                request,
+                "ground_vibration/index.html",
+                {
+                    "model_registry": MODEL_REGISTRY,
+                    "selected_model": selected_model,
+                    "model_form": model_form,
+                    "distance": distance,
+                    "weight": weight,
+                    "options_json": None,
+                },
+            )
+
+        model_params = model_form.cleaned_data
+
+        # --- Build PPV dataframe using selected model ---
+        df, weight_series, dist_series = compute_ppv_dataframe_from_model(
+            distance, weight, compute_fn, model_params
+        )
+
+        # Persist data to session
         request.session["gv_distance"] = distance
         request.session["gv_weight"] = weight
         request.session["gv_model"] = selected_model
+        request.session["gv_params"] = model_params
         request.session["gv_df"] = df.to_json()
 
         return redirect("ground-vibration-index")
 
     # --------------------------
-    # GET → load existing state
+    # GET → load session state
     # --------------------------
     distance = request.session.get("gv_distance")
     weight = request.session.get("gv_weight")
     selected_model = request.session.get("gv_model")
+    model_params = request.session.get("gv_params")
 
     df = None
+    model_form = None
+
+    if selected_model:
+        form_class = MODEL_REGISTRY[selected_model]["form"]
+        model_form = form_class(initial=model_params)
+
     if request.session.get("gv_df"):
-        json_str = request.session["gv_df"]
-        df = pd.read_json(StringIO(json_str))
+        df = pd.read_json(StringIO(request.session["gv_df"]))
 
     options_json = None
-    if df is not None and distance is not None and weight is not None:
+    if df is not None:
         weight_series = compute_weight_series(weight)
         option = build_ppv_chart_options(df, distance, weight, weight_series)
         options_json = json.dumps(option)
 
-    context = {
-        "models": models,
-        "selected_model": selected_model,
-        "distance": distance,
-        "weight": weight,
-        "df": df,
-        "options_json": options_json,
-    }
+    return render(
+        request,
+        "ground_vibration/index.html",
+        {
+            "model_registry": MODEL_REGISTRY,
+            "selected_model": selected_model,
+            "model_form": model_form,
+            "distance": distance,
+            "weight": weight,
+            "options_json": options_json,
+        },
+    )
 
-    return render(request, "ground_vibration/index.html", context)
 
 
 def export_excel(request):
