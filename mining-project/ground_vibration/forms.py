@@ -1,13 +1,12 @@
-"""
-forms.py
-
-Django Form classes for the Ground Vibration PPV models 10–19.
-Each form corresponds directly to a compute function in vibration_models.py.
-
-All fields are required. Validation is handled automatically by Django.
-"""
-
 from django import forms
+
+# Reusable numeric widget with DaisyUI styling
+NUMBER_WIDGET = forms.NumberInput(
+    attrs={
+        "class": "input input-bordered w-full",
+        "step": "0.01",
+    }
+)
 
 
 # ============================================================
@@ -15,10 +14,21 @@ from django import forms
 # ============================================================
 
 class Model10Form(forms.Form):
-    K = forms.FloatField(required=True, help_text="Site constant K")
-    beta = forms.FloatField(required=True, help_text="Attenuation exponent β")
-    alpha = forms.FloatField(required=True, help_text="Damping factor α")
-
+    K = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Site constant K",
+    )
+    beta = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Attenuation exponent β",
+    )
+    alpha = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Damping factor α",
+    )
 
 
 # ============================================================
@@ -26,11 +36,24 @@ class Model10Form(forms.Form):
 # ============================================================
 
 class Model11Form(forms.Form):
-    K = forms.FloatField(required=True)
-    a = forms.FloatField(required=True, help_text="Exponent on W")
-    n = forms.FloatField(required=True, help_text="Exponent on D")
-    alpha = forms.FloatField(required=True)
-
+    K = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+    )
+    a = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Exponent on W",
+    )
+    n = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Exponent on D",
+    )
+    alpha = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+    )
 
 
 # ============================================================
@@ -38,10 +61,19 @@ class Model11Form(forms.Form):
 # ============================================================
 
 class Model12Form(forms.Form):
-    K = forms.FloatField(required=True)
-    beta = forms.FloatField(required=True)
-    alpha = forms.FloatField(required=True, help_text="Exponent in exp(-αK). To verify.")
-
+    K = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+    )
+    beta = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+    )
+    alpha = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Exponent in exp(-αK). To verify.",
+    )
 
 
 # ============================================================
@@ -49,10 +81,19 @@ class Model12Form(forms.Form):
 # ============================================================
 
 class Model13Form(forms.Form):
-    K = forms.FloatField(required=True)
-    beta = forms.FloatField(required=True)
-    alpha = forms.FloatField(required=True, help_text="Multiplier for D/W inside exponential")
-
+    K = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+    )
+    beta = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+    )
+    alpha = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Multiplier for D/W inside exponential",
+    )
 
 
 # ============================================================
@@ -60,9 +101,16 @@ class Model13Form(forms.Form):
 # ============================================================
 
 class Model14Form(forms.Form):
-    n = forms.FloatField(required=True, help_text="Constant n")
-    K = forms.FloatField(required=True, help_text="Coefficient K")
-
+    n = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Constant n",
+    )
+    K = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Coefficient K",
+    )
 
 
 # ============================================================
@@ -70,11 +118,25 @@ class Model14Form(forms.Form):
 # ============================================================
 
 class Model15Form(forms.Form):
-    K = forms.FloatField(required=True)
-    d = forms.FloatField(required=True, help_text="Exponent d on (D / W^0.5)")
-    B = forms.FloatField(required=True, help_text="Site constant B")
-    beta = forms.FloatField(required=True, help_text="Exponent β on B")
-
+    K = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+    )
+    d = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Exponent d on (D / W^0.5)",
+    )
+    B = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Site constant B",
+    )
+    beta = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Exponent β on B",
+    )
 
 
 # ============================================================
@@ -82,12 +144,31 @@ class Model15Form(forms.Form):
 # ============================================================
 
 class Model16Form(forms.Form):
-    a = forms.FloatField(required=True, help_text="Scale factor a")
-    RMR = forms.FloatField(required=True, help_text="Rock Mass Rating (RMR)")
-    b = forms.FloatField(required=True, help_text="Exponent on RMR")
-    B = forms.FloatField(required=True, help_text="Site factor B")
-    alpha = forms.FloatField(required=True, help_text="Damping factor α")
-
+    a = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Scale factor a",
+    )
+    RMR = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Rock Mass Rating (RMR)",
+    )
+    b = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Exponent on RMR",
+    )
+    B = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Site factor B",
+    )
+    alpha = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Damping factor α",
+    )
 
 
 # ============================================================
@@ -95,10 +176,19 @@ class Model16Form(forms.Form):
 # ============================================================
 
 class Model17Form(forms.Form):
-    K = forms.FloatField(required=True)
-    beta = forms.FloatField(required=True)
-    alpha = forms.FloatField(required=True, help_text="Multiplier in exp(α*(...))")
-
+    K = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+    )
+    beta = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+    )
+    alpha = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Multiplier in exp(α * (...))",
+    )
 
 
 # ============================================================
@@ -106,10 +196,18 @@ class Model17Form(forms.Form):
 # ============================================================
 
 class Model18Form(forms.Form):
-    K = forms.FloatField(required=True)
-    beta = forms.FloatField(required=True)
-    alpha = forms.FloatField(required=True)
-
+    K = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+    )
+    beta = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+    )
+    alpha = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+    )
 
 
 # ============================================================
@@ -117,9 +215,33 @@ class Model18Form(forms.Form):
 # ============================================================
 
 class Model19Form(forms.Form):
-    a = forms.FloatField(required=True, help_text="Coefficient for first term a*(W^d / D^c)")
-    d = forms.FloatField(required=True, help_text="Exponent d on W in both terms")
-    c = forms.FloatField(required=True, help_text="Exponent c on D in both terms")
-    K = forms.FloatField(required=True, help_text="Coefficient K used in second term K^b")
-    b = forms.FloatField(required=True, help_text="Exponent b applied to K and inner ratio")
-    e = forms.FloatField(required=True, help_text="Exponent coefficient in exp(-e * D/W)")
+    a = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Coefficient for first term a*(W^d / D^c)",
+    )
+    d = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Exponent d on W in both terms",
+    )
+    c = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Exponent c on D in both terms",
+    )
+    K = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Coefficient K used in second term K^b",
+    )
+    b = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Exponent b applied to K and inner ratio",
+    )
+    e = forms.FloatField(
+        required=True,
+        widget=NUMBER_WIDGET,
+        help_text="Exponent coefficient in exp(-e * D/W)",
+    )
