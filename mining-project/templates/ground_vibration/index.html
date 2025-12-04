@@ -30,7 +30,7 @@
                     <label class="label pb-1">
                         <span class="label-text font-semibold">Distance from Blast (D)</span>
                     </label>
-                    <input type="number" name="distance" required step="0.01" min="0"
+                    <input type="number" name="distance" required step="any" min="0"
                            class="input input-bordered w-full"
                            value="{{ distance|default:'' }}">
                 </div>
@@ -40,7 +40,7 @@
                     <label class="label pb-1">
                         <span class="label-text font-semibold">Charge Weight (W)</span>
                     </label>
-                    <input type="number" name="weight" required step="0.01" min="0"
+                    <input type="number" name="weight" required step="any" min="0"
                            class="input input-bordered w-full"
                            value="{{ weight|default:'' }}">
                 </div>

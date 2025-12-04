@@ -81,14 +81,13 @@ def compute_ppv_dataframe_from_model(D, W, compute_fn, params):
 def index(request):
 
     # --------------------------
-    # POST → compute & persist
+    # POST → compute & save into session
     # --------------------------
     if request.method == "POST":
         distance = float(request.POST.get("distance"))
         weight = float(request.POST.get("weight"))
         selected_model = request.POST.get("model")
 
-        # Validate model key
         if selected_model not in MODEL_REGISTRY:
             return HttpResponseBadRequest("Invalid model selected.")
 
@@ -96,17 +95,16 @@ def index(request):
         form_class = model_def["form"]
         compute_fn = model_def["compute"]
 
-        # Validate model-specific fields
+        # Build and validate model-specific form
         model_form = form_class(request.POST)
         if not model_form.is_valid():
-            # render page with model_form errors + base inputs
             return render(
                 request,
                 "ground_vibration/index.html",
                 {
                     "model_registry": MODEL_REGISTRY,
                     "selected_model": selected_model,
-                    "model_form": model_form,
+                    "model_form": model_form,   # <-- return with errors + data
                     "distance": distance,
                     "weight": weight,
                     "options_json": None,
@@ -115,12 +113,12 @@ def index(request):
 
         model_params = model_form.cleaned_data
 
-        # --- Build PPV dataframe using selected model ---
+        # Compute PPV curves
         df, weight_series, dist_series = compute_ppv_dataframe_from_model(
             distance, weight, compute_fn, model_params
         )
 
-        # Persist data to session
+        # Persist into session for GET reload
         request.session["gv_distance"] = distance
         request.session["gv_weight"] = weight
         request.session["gv_model"] = selected_model
@@ -130,20 +128,22 @@ def index(request):
         return redirect("ground-vibration-index")
 
     # --------------------------
-    # GET → load session state
+    # GET → load session state & rebuild page
     # --------------------------
     distance = request.session.get("gv_distance")
     weight = request.session.get("gv_weight")
     selected_model = request.session.get("gv_model")
     model_params = request.session.get("gv_params")
 
-    df = None
     model_form = None
+    df = None
 
+    # If a model was previously selected, rehydrate its form
     if selected_model:
         form_class = MODEL_REGISTRY[selected_model]["form"]
         model_form = form_class(initial=model_params)
 
+    # If DF exists, rebuild chart
     if request.session.get("gv_df"):
         df = pd.read_json(StringIO(request.session["gv_df"]))
 
@@ -159,13 +159,12 @@ def index(request):
         {
             "model_registry": MODEL_REGISTRY,
             "selected_model": selected_model,
-            "model_form": model_form,
+            "model_form": model_form,          # <-- restored correctly
             "distance": distance,
             "weight": weight,
             "options_json": options_json,
         },
     )
-
 
 
 def export_excel(request):
