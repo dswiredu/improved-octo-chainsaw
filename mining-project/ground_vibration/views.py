@@ -122,6 +122,7 @@ def index(request):
         request.session["gv_distance"] = distance
         request.session["gv_weight"] = weight
         request.session["gv_model"] = selected_model
+        request.session["gv_model_label"] = model_def["label"]
         request.session["gv_params"] = model_params
         request.session["gv_df"] = df.to_json()
 
@@ -142,6 +143,12 @@ def index(request):
     if selected_model:
         form_class = MODEL_REGISTRY[selected_model]["form"]
         model_form = form_class(initial=model_params)
+    
+    # print("Model:", selected_model)
+    # print("Params:", model_params)
+    # if model_form:
+    #     print("Form fields:", model_form.fields.keys())
+    #     print("Initial:", model_form.initial)
 
     # If DF exists, rebuild chart
     if request.session.get("gv_df"):
@@ -159,12 +166,32 @@ def index(request):
         {
             "model_registry": MODEL_REGISTRY,
             "selected_model": selected_model,
-            "model_form": model_form,          # <-- restored correctly
+            "model_form": model_form,
             "distance": distance,
             "weight": weight,
             "options_json": options_json,
         },
     )
+
+def construct_model_metadata(request) -> pd.DataFrame:
+    # ---- Extract stored metadata ----
+    model_label = request.session.get("gv_model_label")
+    model_params = request.session.get("gv_params", {})
+    distance = request.session.get("gv_distance")
+    weight = request.session.get("gv_weight")
+
+    # ---- Build parameters DF (2-column tidy format) ----
+    param_rows = [
+        ["Model", model_label],
+        ["Distance", distance],
+        ["Weight", weight],
+    ]
+
+    for key, value in model_params.items():
+        param_rows.append([key, value])
+
+    df_params = pd.DataFrame(param_rows, columns=["Parameter", "Value"])
+    return df_params
 
 
 def export_excel(request):
@@ -177,6 +204,8 @@ def export_excel(request):
     df_json = request.session["gv_df"]
     df = pd.read_json(StringIO(df_json))
 
+    df_params = construct_model_metadata(request)
+
     timestamp = timezone.now().strftime("%Y%m%d_%H%M%S")
     filename = f"ground_vibration_export_{timestamp}.xlsx"
-    return export_df_to_excel(df, filename)
+    return export_df_to_excel([df_params, df], filename)

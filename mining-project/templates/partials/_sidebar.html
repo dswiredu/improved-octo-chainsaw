@@ -9,7 +9,18 @@
   {% with current=request.resolver_match.url_name %}
     <ul class="pt-4 space-y-1 text-base">
       {% for section in sidebar_nav_items %}
-        <li x-data="{ sub: false }" @click.outside="sub = false">
+        <li 
+          x-data="{ sub: false }"
+          x-init="
+              {% for item in section.items %}
+                  {% if current == item.url_name %}
+                      sub = true;
+                      activeSection = {{ forloop.parentloop.counter }};
+                  {% endif %}
+              {% endfor %}
+          "
+          @click.outside="sub = false"
+        >
           <!-- Section Button -->
           <button
             type="button"

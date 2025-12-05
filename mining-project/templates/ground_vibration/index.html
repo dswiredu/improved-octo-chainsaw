@@ -74,7 +74,7 @@
                     <div id="model-form-inner"
                          class="h-full overflow-y-auto pr-1">
                         {% if model_form %}
-                            {% include "ground_vibration/partials/model_form.html" %}
+                            {% include "ground_vibration/partials/model_form.html" with form=model_form%}
                         {% else %}
                             <p class="text-gray-400 text-sm">
                                 Select a model to enter parameters.
