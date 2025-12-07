@@ -6,11 +6,22 @@ def sidebar_nav_items(request):
     nav_items = [
         {
             "label": "Ground Vibration",
-            "icon": "fa-explosion",
+            "icon": "fa-wave-square",
             "items": [
                 {
                     "label": "Modelling",
                     "url_name": "ground-vibration-index",
+                    "icon": "fa-chart-line"
+                },
+            ],
+        },
+        {
+            "label": "Air Blast",
+            "icon": "fa-wind",
+            "items": [
+                {
+                    "label": "Modelling",
+                    "url_name": "air-blast-index",
                     "icon": "fa-chart-line"
                 },
             ],

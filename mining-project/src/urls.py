@@ -22,4 +22,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("allauth.urls")),
     path("", include("ground_vibration.urls")),
+    path("air-blast", include("air_blast.urls")),
 ]

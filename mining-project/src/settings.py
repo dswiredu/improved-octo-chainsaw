@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 
     "core",
     "ground_vibration",
+    "air_blast",
 ]
 
 AUTHENTICATION_BACKENDS = [
